@@ -1,37 +1,55 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
-import "../styles/auth.css";
-import Navbar from "../component/Navbar";
-import Footer from "../component/Footer";
+import { Link, useNavigate } from "react-router-dom";
+import { loginUser } from "../services/authService";
 
 export default function Login() {
+
+  const navigate = useNavigate();
+
+  // 🔹 state for login form
   const [form, setForm] = useState({
     email: "",
-    password: "",
+    password: ""
   });
 
+  // 🔹 handle input change
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  // 🔹 handle submit
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Login Data:", form);
 
-    // 👉 yaha backend API call aayega
+    try {
+      const res = await loginUser(form);
+
+      // token store
+      localStorage.setItem("token", res.token);
+
+      // user store
+      localStorage.setItem("user", JSON.stringify(res.user));
+
+      alert("Login Successful");
+
+      // redirect
+      navigate("/");
+
+    } catch (err) {
+      alert(err.response?.data?.msg || "Login failed");
+    }
   };
 
   return (
-    <>
     <div className="auth-container">
       <h2>Login</h2>
 
       <form onSubmit={handleSubmit} className="auth-form">
+
         <input
           type="email"
           name="email"
           placeholder="Enter Email"
-          value={form.email}
           onChange={handleChange}
           required
         />
@@ -40,7 +58,6 @@ export default function Login() {
           type="password"
           name="password"
           placeholder="Enter Password"
-          value={form.password}
           onChange={handleChange}
           required
         />
@@ -52,6 +69,5 @@ export default function Login() {
         Don't have an account? <Link to="/register">Register</Link>
       </p>
     </div>
-    </>
   );
 }

@@ -5,6 +5,7 @@ const jwt = require("jsonwebtoken");
 //register user
 exports.registerUser = async (req, res) => {
     try {
+        console.log("BODY:", req.body);
         const { first_name, last_name, email, phone_no, address, gender, password, role } = req.body;
 
         //check if user already exists
@@ -14,10 +15,16 @@ exports.registerUser = async (req, res) => {
         }
 
         //hash password
-        const salt = await bcrypt.gensalt(10);
+        const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
 
         //create new user
+
+        let userRole = "user"; // default role
+        if(role === "employer"){
+            userRole = "employer";
+        }
+
         user = new User({
             first_name,
             last_name,
@@ -26,7 +33,7 @@ exports.registerUser = async (req, res) => {
             address,
             gender,
             password: hashedPassword,
-            role: role || "user"
+            role: userRole
         })
 
         await user.save();
