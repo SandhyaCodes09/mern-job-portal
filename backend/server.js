@@ -20,6 +20,10 @@ app.use(express.json()); // for parsing application/json
 const authRoutes = require("./routes/authRoutes");
 app.use("/api/auth", authRoutes);
 
+// job routes
+const jobRoutes = require("./routes/jobRoutes");
+app.use("/api/jobs", jobRoutes);
+
 // test route
 app.get("/", (req,res) => {
     // res.send("Api Running");

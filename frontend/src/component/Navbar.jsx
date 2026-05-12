@@ -1,8 +1,16 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate} from "react-router-dom";
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
+
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+
+    navigate("/login");
+  };
 
   return (
     <>
@@ -17,8 +25,9 @@ export default function Navbar() {
 
       <nav className={`navbar ${menuOpen ? "active" : ""}`}>
         <Link to="/">Home</Link>
-        <Link to="/jobs">Jobs</Link>
+        <Link to="/job/${job._id}">Jobs</Link>
         <Link to="/login">Login</Link>
+        <button onClick={handleLogout}>Logout</button>
 
         <div className="form">
           <input type="file" />

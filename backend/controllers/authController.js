@@ -1,4 +1,4 @@
-const User = require("../models/User");
+const User = require("../models/UserModel");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
@@ -68,6 +68,7 @@ exports.loginUser = async (req, res) => {
             process.env.JWT_SECRET,
             { expiresIn: "1h" }
         );
+        // res.cookie("token", token, { httpOnly: true, secure: process.env.NODE_ENV === "production" });
 
         res.json({
             msg: "Login successful",

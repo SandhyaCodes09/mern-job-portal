@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import "../styles/home.css";
 import Navbar from "../component/Navbar";
@@ -6,56 +6,34 @@ import Footer from "../component/Footer";
 import Search from "../component/Search"; 
 import Category from "../component/Category";  
 
+import axios from "axios";
+
+// state to hold jobs
+
+const [jobs, setJobs] = useState([]);
+
+useEffect(()=>{
+   
+  const fetchJobs = async ()=>{
+    try{
+      const res = await axios.get("/api/jobs");
+      setJobs(res.data);
+    } catch (error) {
+      console.error("Error fetching jobs:", error);
+    }
+  };
+
+  fetchJobs();
+}, []);
+
+// ================= HOME PAGE COMPONENT =================
 export default function Home() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("");
   const [location, setLocation] = useState("");
 
- const jobs = [
-  {
-    id: 1,
-    title: "Software Engineer",
-    company: "Tech Solutions Inc.",
-    location: "Remote",
-    category: "Software Engineer",
-  },
-  {
-    id: 2,
-    title: "IT & Networking Specialist",
-    company: "Tech Solutions Inc.",
-    location: "Remote",
-    category: "IT & Networking",
-  },
-  {
-    id: 3,
-    title: "Project Manager",
-    company: "Global Enterprises",
-    location: "On-site",
-    category: "Project Manager",
-  },
-  {
-    id: 4,
-    title: "Marketing Specialist",
-    company: "Creative Minds Co.",
-    location: "Remote",
-    category: "Marketing",
-  },
-  {
-    id: 5,
-    title: "Financial Analyst",
-    company: "Finance Experts Ltd.",
-    location: "On-site",
-    category: "Finance",
-  },
-  {
-    id: 6,
-    title: "Human Resources Manager",
-    company: "HR Hub",
-    location: "On-site",
-    category: "Human Resources",
-  },
-];
+
 
   // simple search filter
   const filteredJobs = jobs.filter((job) =>
@@ -87,12 +65,12 @@ export default function Home() {
 
           <div className="jobs-wrapper">
             {filteredJobs.map((job) => (
-              <div key={job.id} className="job-listing">
+              <div key={job._id} className="job-listing">
                 <h3>{job.title}</h3>
                 <p>Company: {job.company}</p>
                 <p>Location: {job.location}</p>
 
-                <Link to={`/job/${job.id}`}>View Details</Link>
+                <Link to={`/job/${job._id}`}>View Details</Link>
               </div>
             ))}
           </div>
