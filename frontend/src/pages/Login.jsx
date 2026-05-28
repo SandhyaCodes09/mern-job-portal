@@ -25,7 +25,7 @@ export default function Login() {
       const res = await loginUser(form);
 
       // token store
-      localStorage.setItem("token", res.token);
+      // localStorage.setItem("token", res.token);
 
       // user store
       localStorage.setItem("user", JSON.stringify(res.user));
@@ -37,37 +37,66 @@ export default function Login() {
 
     } catch (err) {
       alert(err.response?.data?.msg || "Login failed");
+
     }
   };
 
   return (
-    <div className="auth-container">
-      <h2>Login</h2>
 
-      <form onSubmit={handleSubmit} className="auth-form">
+  <>
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-100 to-blue-200 px-5">
 
-        <input
-          type="email"
-          name="email"
-          placeholder="Enter Email"
-          onChange={handleChange}
-          required
-        />
+      <div className="bg-white shadow-2xl rounded-3xl p-8 w-full max-w-md">
 
-        <input
-          type="password"
-          name="password"
-          placeholder="Enter Password"
-          onChange={handleChange}
-          required
-        />
+        <h2 className="text-4xl font-bold text-center text-gray-800 mb-8">
+          Login
+        </h2>
 
-        <button type="submit">Login</button>
-      </form>
+        <form onSubmit={handleSubmit} className="space-y-5">
 
-      <p>
-        Don't have an account? <Link to="/register">Register</Link>
-      </p>
+          <input
+            type="email"
+            name="email"
+            placeholder="Enter Email"
+            onChange={handleChange}
+            required
+            className="w-full border border-gray-300 rounded-xl p-4 outline-none focus:ring-2 focus:ring-blue-500"
+          />
+
+          <input
+            type="password"
+            name="password"
+            placeholder="Enter Password"
+            onChange={handleChange}
+            required
+            className="w-full border border-gray-300 rounded-xl p-4 outline-none focus:ring-2 focus:ring-blue-500"
+          />
+
+          <button
+            type="submit"
+            className="w-full bg-blue-600 text-white py-4 rounded-xl font-semibold hover:bg-blue-700 transition"
+          >
+            Login
+          </button>
+
+        </form>
+
+        <p className="text-center text-gray-600 mt-6">
+
+          Don't have an account?{" "}
+
+          <Link
+            to="/register"
+            className="text-blue-600 font-semibold hover:underline"
+          >
+            Register
+          </Link>
+
+        </p>
+
+      </div>
+
     </div>
+  </>
   );
 }

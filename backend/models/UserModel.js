@@ -41,7 +41,13 @@ const userSchema = new mongoose.Schema({
     created_at: { 
         type: Date, 
         default: Date.now 
-    }
+    },
+
+  // Resume file path
+    resume: {
+    type: String,
+    default: ""
+    },
 });
 
 const UserModel = mongoose.model("User", userSchema);

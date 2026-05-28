@@ -42,39 +42,115 @@ export default function Register() {
   };
 
   return (
-    <div className="auth-container">
-      <h2>Register</h2>
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-100 to-blue-200 px-5 py-10">
 
-      <form onSubmit={handleSubmit} className="auth-form">
+      <div className="bg-white shadow-2xl rounded-3xl p-8 w-full max-w-2xl">
 
-        <input name="first_name" placeholder="First Name" onChange={handleChange} required />
-        <input name="last_name" placeholder="Last Name" onChange={handleChange} required />
-        <input name="email" type="email" placeholder="Email" onChange={handleChange} required />
-        <input name="phone_no" placeholder="Phone Number" onChange={handleChange} required />
-        <input name="address" placeholder="Address" onChange={handleChange} required />
+        <h2 className="text-4xl font-bold text-center text-gray-800 mb-8">
+          Register
+        </h2>
 
-        {/* Gender */}
-        <select name="gender" onChange={handleChange} required>
-          <option value="">Select Gender</option>
-          <option value="male">Male</option>
-          <option value="female">Female</option>
-          <option value="other">Other</option>
-        </select>
+        <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-5">
 
-        <input name="password" type="password" placeholder="Password" onChange={handleChange} required />
+          <input
+            name="first_name"
+            placeholder="First Name"
+            onChange={handleChange}
+            required
+            className="border border-gray-300 rounded-xl p-4 outline-none focus:ring-2 focus:ring-blue-500"
+          />
 
-        {/* Role */}
-        <select name="role" onChange={handleChange}>
-          <option value="user">Job Seeker</option>
-          <option value="employer">Employer</option>
-        </select>
+          <input
+            name="last_name"
+            placeholder="Last Name"
+            onChange={handleChange}
+            required
+            className="border border-gray-300 rounded-xl p-4 outline-none focus:ring-2 focus:ring-blue-500"
+          />
 
-        <button type="submit">Register</button>
-      </form>
+          <input
+            name="email"
+            type="email"
+            placeholder="Email"
+            onChange={handleChange}
+            required
+            className="border border-gray-300 rounded-xl p-4 outline-none focus:ring-2 focus:ring-blue-500"
+          />
 
-      <p>
-        Already have an account? <Link to="/login">Login</Link>
-      </p>
+          <input
+            name="phone_no"
+            placeholder="Phone Number"
+            onChange={handleChange}
+            required
+            className="border border-gray-300 rounded-xl p-4 outline-none focus:ring-2 focus:ring-blue-500"
+          />
+
+          <input
+            name="address"
+            placeholder="Address"
+            onChange={handleChange}
+            required
+            className="md:col-span-2 border border-gray-300 rounded-xl p-4 outline-none focus:ring-2 focus:ring-blue-500"
+          />
+
+          <select
+            name="gender"
+            onChange={handleChange}
+            required
+            className="border border-gray-300 rounded-xl p-4 outline-none focus:ring-2 focus:ring-blue-500"
+          >
+
+            <option value="">Select Gender</option>
+            <option value="male">Male</option>
+            <option value="female">Female</option>
+            <option value="other">Other</option>
+
+          </select>
+
+          <select
+            name="role"
+            onChange={handleChange}
+            className="border border-gray-300 rounded-xl p-4 outline-none focus:ring-2 focus:ring-blue-500"
+          >
+
+            <option value="user">Job Seeker</option>
+            <option value="employer">Employer</option>
+
+          </select>
+
+          <input
+            name="password"
+            type="password"
+            placeholder="Password"
+            onChange={handleChange}
+            required
+            className="md:col-span-2 border border-gray-300 rounded-xl p-4 outline-none focus:ring-2 focus:ring-blue-500"
+          />
+
+          <button
+            type="submit"
+            className="md:col-span-2 w-full bg-blue-600 text-white py-4 rounded-xl font-semibold hover:bg-blue-700 transition"
+          >
+            Register
+          </button>
+
+        </form>
+
+        <p className="text-center text-gray-600 mt-6">
+
+          Already have an account?{" "}
+
+          <Link
+            to="/login"
+            className="text-blue-600 font-semibold hover:underline"
+          >
+            Login
+          </Link>
+
+        </p>
+
+      </div>
+
     </div>
   );
 }
