@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { useSearchParams, Link } from "react-router-dom"
-import Navbar from "../component/Navbar";
+import Navbar from "../components/Navbar";
 
 
 export default function Jobs() {

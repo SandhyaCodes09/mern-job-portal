@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import "../styles/home.css";
-import Navbar from "../component/Navbar";
-import Footer from "../component/Footer";
-import Search from "../component/Search"; 
-import Category from "../component/Category";  
-import FeaturedJobs from "../component/FeaturedJobs";
-import Hero from "../component/Hero";
+import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
+import Search from "../components/Search"; 
+import Category from "../components/Category";  
+import FeaturedJobs from "../components/FeaturedJobs";
+import Hero from "../components/Hero";
 
 import axios from "axios";
 
