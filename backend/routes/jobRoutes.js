@@ -5,10 +5,13 @@ const {
     getJobs,
     createJob,
     getSingleJob,
-    getJobsByCategory
+    getJobsByCategory,
+    getEmployerJobs,
+    deleteJob,
+    updateJob
+
 } = require("../controllers/jobController");
 
-// const { protect } = require("../middlewares/authMiddleware");
 const {protect, authorize} = require("../middlewares/authMiddleware");  
   
 // ===============================
@@ -25,16 +28,40 @@ router.get("/my-jobs", protect, (req, res) => {
 // JOB ROUTES
 // ===============================
 
-// create job (employer only)
+// create job
 router.post("/", protect, authorize("employer"), createJob);
+
+// employer jobs
+router.get(
+    "/employer/jobs",
+    protect,
+    authorize("employer"),
+    getEmployerJobs
+);
 
 // get all jobs
 router.get("/", getJobs);
 
-// filter by category
+// job category
 router.get("/category/:category", getJobsByCategory);
 
 // single job
 router.get("/:id", getSingleJob);
+
+// update job
+router.put(
+    "/:id",
+    protect,
+    authorize("employer"),
+    updateJob
+);
+
+// delete job
+router.delete(
+    "/:id",
+    protect,
+    authorize("employer"),
+    deleteJob
+);
 
 module.exports = router;

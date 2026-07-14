@@ -101,17 +101,6 @@ exports.loginUser = async (req, res) => {
             maxAge: 60 * 60 * 1000 // 1 hour
         });
 
-        // send user data in response
-
-        // res.status(200).json({
-        //     success: true,
-        //     user:{
-        //         name: user.first_name + " " + user.last_name,
-        //         email: user.email,
-        //         role: user.role
-        //     }
-
-        // });
 
         // send safe user data (NO password)
         res.json({
@@ -135,33 +124,44 @@ exports.loginUser = async (req, res) => {
 // GET CURRENT USER (FROM TOKEN)    
 //==============================//
 
-exports.getMe = async (req,res) => {
-    try {
-        const token = req.cookies.token
 
-        if(!token){
+exports.getMe = async (req, res) => {
+    try {
+
+        const token = req.cookies.token;
+
+        if (!token) {
             return res.status(401).json({
-                msg: "No token, authorization denied"
-            })
-        } 
+                msg: "No token"
+            });
+        }
 
         const decoded = jwt.verify(
             token,
             process.env.JWT_SECRET
         );
 
-        res.json({
-            user:{
-                id: decoded.id,
-                first_name: decoded.first_name,
-                role: decoded.role,
-                resume: decoded.resume  
-            }
+        const user = await User.findById(decoded.id).select("-password");
+
+        if (!user) {
+            return res.status(404).json({
+                msg: "User not found"
+            });
+        }
+
+        res.status(200).json({
+            user
         });
+
     } catch (error) {
+
         console.log(error);
-        res.status(500).json({ msg: "Server error" });
-    }   
+
+        res.status(500).json({
+            msg: "Server error"
+        });
+
+    }
 };
 
 
@@ -245,5 +245,140 @@ exports.uploadResume = async (req, res) => {
       });
 
    }
+
+};
+
+// =======================================
+// UPDATE USER PROFILE
+// =======================================
+// exports.updateProfile = async (req, res) => {
+//     try {
+
+//         // Get token from cookie
+//         const token = req.cookies.token;
+
+//         if (!token) {
+//             return res.status(401).json({
+//                 msg: "Unauthorized"
+//             });
+//         }
+
+//         // Verify token
+//         const decoded = jwt.verify(
+//             token,
+//             process.env.JWT_SECRET
+//         );
+
+//         // Find logged-in user
+//         const user = await User.findById(decoded.id);
+
+//         if (!user) {
+//             return res.status(404).json({
+//                 msg: "User not found"
+//             });
+//         }
+
+//         // Update only if value is provided
+//         user.first_name = req.body.first_name || user.first_name;
+//         user.last_name = req.body.last_name || user.last_name;
+//         user.phone_no = req.body.phone_no || user.phone_no;
+//         user.address = req.body.address || user.address;
+//         user.gender = req.body.gender || user.gender;
+
+//         await user.save();
+
+//         // Don't send password back
+//         const updatedUser = await User.findById(user._id).select("-password");
+
+//         res.status(200).json({
+//             success: true,
+//             msg: "Profile updated successfully",
+//             user: updatedUser
+//         });
+
+//     } catch (error) {
+
+//         console.log(error);
+
+//         res.status(500).json({
+//             msg: "Server Error"
+//         });
+
+//     }
+// };
+
+
+// ==============================
+// Update Logged-in User Profile
+// ==============================
+
+exports.updateProfile = async (req, res) => {
+
+    try {
+
+        // Get JWT token from cookie
+        const token = req.cookies.token;
+
+        if (!token) {
+            return res.status(401).json({
+                msg: "Unauthorized"
+            });
+        }
+
+        // Verify JWT token
+        const decoded = jwt.verify(
+            token,
+            process.env.JWT_SECRET
+        );
+
+        // Find logged-in user
+        const user = await User.findById(decoded.id);
+
+        if (!user) {
+            return res.status(404).json({
+                msg: "User not found"
+            });
+        }
+
+        // =========================
+        // Update profile fields
+        // =========================
+
+        user.first_name = req.body.first_name || user.first_name;
+        user.last_name = req.body.last_name || user.last_name;
+        user.phone_no = req.body.phone_no || user.phone_no;
+        user.address = req.body.address || user.address;
+        user.gender = req.body.gender || user.gender;
+
+        // =========================
+        // Update resume (optional)
+        // =========================
+
+        if (req.file) {
+            user.resume = req.file.filename;
+        }
+
+        // Save changes
+        await user.save();
+
+        // Fetch updated user without password
+        const updatedUser = await User.findById(user._id).select("-password");
+
+        // Send updated data
+        res.status(200).json({
+            success: true,
+            msg: "Profile updated successfully",
+            user: updatedUser
+        });
+
+    } catch (error) {
+
+        console.log(error);
+
+        res.status(500).json({
+            msg: "Server Error"
+        });
+
+    }
 
 };
