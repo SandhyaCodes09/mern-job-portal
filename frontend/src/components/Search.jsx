@@ -1,4 +1,3 @@
-import { useState } from "react";
 import "../styles/home.css";
 
 export default function Search({ search, setSearch, category, setCategory, location, setLocation }) {

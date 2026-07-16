@@ -27,10 +27,9 @@ export default function EditJob() {
     });
 
     // Load job when page opens
+// eslint-disable-next-line react-hooks/exhaustive-deps
     useEffect(() => {
-
         fetchJob();
-
     }, []);
 
     // ======================================
