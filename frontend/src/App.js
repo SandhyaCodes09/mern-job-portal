@@ -26,31 +26,31 @@ function App() {
         <Route path="/jobs/category/:category" element={<Jobs />} />
         <Route path="/job/:id" element={<JobDetails />} />
 
-        // Profile route
+        {/* Profile route */}
         <Route
           path="/profile"
           element={<Profile />}
         />
 
-        // Update Profile route
+        {/* Update Profile route */}  
         <Route
           path="/profile/edit"
           element={<UpdateProfile />}
         />
 
-         // Employer Dashboard route
+     {/* Employer Dashboard route */}
       <Route
       path="/employer"
       element={<EmployerDashboard />}
       />
 
-      // Create Job route
+      {/* Create Job route */}
       <Route
       path="/create-job"
       element={<CreateJob />}
       />
 
-      // Edit Job route
+      {/* Edit Job route */}
       <Route
       path="/edit-job/:id"
       element={<EditJob />}
