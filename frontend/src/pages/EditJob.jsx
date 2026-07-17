@@ -28,39 +28,64 @@ export default function EditJob() {
 
     // Load job when page opens
 // eslint-disable-next-line react-hooks/exhaustive-deps
-    useEffect(() => {
-        fetchJob();
-    }, []);
+    // useEffect(() => {
+    //     fetchJob();
+    // }, []);
 
     // ======================================
     // Get Single Job
     // ======================================
+
+    // const fetchJob = async () => {
+
+    //     try {
+
+    //         const res = await axios.get(
+
+    //             `http://localhost:5000/api/jobs/${id}`
+
+    //         );
+
+    //         setJob({
+
+    //             ...res.data,
+
+    //             skills: res.data.skills.join(", ")
+
+    //         });
+
+    //     } catch (error) {
+
+    //         console.log(error);
+
+    //     }
+
+    // };
+
+    useEffect(() => {
 
     const fetchJob = async () => {
 
         try {
 
             const res = await axios.get(
-
                 `http://localhost:5000/api/jobs/${id}`
-
             );
 
             setJob({
-
                 ...res.data,
-
                 skills: res.data.skills.join(", ")
-
             });
 
         } catch (error) {
-
             console.log(error);
-
         }
 
     };
+
+    fetchJob();
+
+}, [id]);
 
     // ======================================
     // Handle Input Change
