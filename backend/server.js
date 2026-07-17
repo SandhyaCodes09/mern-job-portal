@@ -37,8 +37,11 @@ app.use(cookieParser());
 
 app.use(
     cors({
-        origin: "http://localhost:3000", // frontend URL
-        credentials: true, // allow cookies to be sent  
+        origin: [
+            "http://localhost:3000",
+            "https://mern-job-portal-3xium0vyv-sandhya-projects2.vercel.app/"
+        ], // frontend URL
+        credentials: true, // allow cookies to be sent
     })
 );
 
