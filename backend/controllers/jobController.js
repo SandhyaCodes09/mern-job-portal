@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const Job = require("../models/jobModel");
+const Job = require("../models/JobModel");
 
 // ======================================
 // Create Job
