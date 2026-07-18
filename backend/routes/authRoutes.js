@@ -6,10 +6,16 @@ const {
     getMe, 
     logoutUser,  
     uploadResume,
-    updateProfile
+    updateProfile,
+
+    getEmployerProfile,
+    updateEmployerProfile
    } = require("../controllers/authController");
 
+   const { protect, authorize  } = require("../middlewares/authMiddleware");
+
 const upload = require("../middlewares/uploadResume");
+const profileUpload = require("../middlewares/profileUpload");
 
 // routes
 router.post("/register", registerUser);
@@ -31,6 +37,27 @@ router.post(
    "/upload-resume",
    upload.single("resume"),
    uploadResume
+);
+
+router.get(
+    "/employer/profile",
+    protect,
+    authorize("employer"),
+    getEmployerProfile
+);
+
+router.put(
+
+    "/employer/profile",
+
+    protect,
+
+    authorize("employer"),
+
+    profileUpload.single("companyLogo"),
+
+    updateEmployerProfile
+
 );
 
 module.exports = router;

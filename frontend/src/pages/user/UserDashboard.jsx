@@ -2,11 +2,8 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 
 import { Link } from "react-router-dom";
-// import { updateProfile } from "../services/authService";
 
-// import { roleLabel } from "../utils/roleLabel";
-
-import { roleLabel } from "../utils/RoleLabel";
+import { roleLabel } from "../../utils/RoleLabel";
 
 export default function Profile() {
 

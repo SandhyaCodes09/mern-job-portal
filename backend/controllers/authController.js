@@ -89,18 +89,17 @@ exports.loginUser = async (req, res) => {
             },
             process.env.JWT_SECRET,
             {
-            expiresIn: "1h"
+            expiresIn: "7d"
             }
             );
 
-        // SEND TOKEN IN HTTP ONLY COOKIE (secure way)
-        res.cookie("token", token, {
-            httpOnly: true,        // JS access nahi kar sakta
-            secure: false,         // production me true (https)
-            sameSite: "lax",       // CSRF protection basic
-            maxAge: 60 * 60 * 1000 // 1 hour
-        });
 
+        res.cookie("token", token, {
+        httpOnly: true,
+        maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+        sameSite: "lax",
+        secure: false
+    });
 
         // send safe user data (NO password)
         res.json({
@@ -377,6 +376,100 @@ exports.updateProfile = async (req, res) => {
 
         res.status(500).json({
             msg: "Server Error"
+        });
+
+    }
+
+};
+
+exports.getEmployerProfile = async (req, res) => {
+
+    try {
+
+        const user = await User.findById(req.user._id).select("-password");
+
+        res.status(200).json({
+
+            success: true,
+
+            user
+
+        });
+
+    }
+
+    catch (error) {
+
+        console.log(error);
+
+        res.status(500).json({
+
+            success: false,
+
+            message: error.message
+
+        });
+
+    }
+
+};
+
+exports.updateEmployerProfile = async (req, res) => {
+
+    try {
+
+        const user = await User.findById(req.user._id);
+
+        if (!user) {
+
+            return res.status(404).json({
+
+                success: false,
+
+                message: "Employer not found"
+
+            });
+
+        }
+
+        user.first_name = req.body.first_name || user.first_name;
+
+        user.last_name = req.body.last_name || user.last_name;
+
+        user.phone_no = req.body.phone_no || user.phone_no;
+
+        user.address = req.body.address || user.address;
+
+        if (req.file) {
+
+            user.profileImage = req.file.filename;
+
+        }
+
+        await user.save();
+
+        res.status(200).json({
+
+            success: true,
+
+            message: "Employer profile updated successfully",
+
+            user
+
+        });
+
+    }
+
+    catch (error) {
+
+        console.log(error);
+
+        res.status(500).json({
+
+            success: false,
+
+            message: error.message
+
         });
 
     }

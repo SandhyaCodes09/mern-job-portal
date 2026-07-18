@@ -36,14 +36,33 @@ export const updateProfile = async (formData) => {
     return res.data;
 };
 
+// Get Employer Profile
+export const getEmployerProfile = async () => {
 
-// export const updateProfile = async (data) => {
+    const res = await API.get(
+        "/users/employer/profile",
+        {
+            withCredentials: true
+        }
+    );
 
-//     const res = await API.put(
-//         "/auth/update-profile",
-//         data
-//     );
+    return res.data;
+};
 
-//     return res.data;
+// Update Employer Profile
+export const updateEmployerProfile = async (formData) => {
 
-// };
+    const res = await API.put(
+        "/users/employer/profile",
+        formData,
+        {
+            withCredentials: true,
+            headers: {
+                "Content-Type": "multipart/form-data"
+            }
+        }
+    );
+
+    return res.data;
+};
+
