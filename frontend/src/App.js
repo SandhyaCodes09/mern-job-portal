@@ -20,7 +20,8 @@ import Jobs from "./pages/common/Jobs";
 // ===============================
 
 import UserDashboard from "./pages/user/UserDashboard";
-import UserEditProfile from "./pages/user/UpdateProfile";
+import UpdateProfile from "./pages/user/UpdateProfile";
+import UserProfile from "./pages/user/UserProfile";
 
 
 
@@ -108,14 +109,20 @@ function App() {
 
 
         <Route
-          path="/user/dashboard"
+          path="/user"
           element={<UserDashboard />}
         />
+
+        <Route 
+          path="/user/profile" 
+          element={<UserProfile />} 
+        />
+
 
 
         <Route
           path="/user/profile/edit"
-          element={<UserEditProfile />}
+          element={<UpdateProfile />}
         />
 
 

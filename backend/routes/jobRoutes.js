@@ -2,14 +2,14 @@ const express = require("express");
 const router = express.Router();
 
 const {
-    getJobs,
-    createJob,
-    getSingleJob,
-    getJobsByCategory,
-    getEmployerJobs,
-    deleteJob,
-    updateJob
-
+  getJobs,
+  createJob,
+  getSingleJob,
+  getJobsByCategory,
+  getJobCategories,
+  getEmployerJobs,
+  deleteJob,
+  updateJob
 } = require("../controllers/jobController");
 
 const {protect, authorize} = require("../middlewares/authMiddleware");  
@@ -39,13 +39,28 @@ router.get(
     getEmployerJobs
 );
 
-// get all jobs
+// // get all jobs
+// router.get("/", getJobs);
+
+// router.get("/categories", getCategories);
+
+// // job category
+// router.get("/category/:category", getJobsByCategory);
+
+// // single job
+// router.get("/:id", getSingleJob);
+
+
+// Get all jobs
 router.get("/", getJobs);
 
-// job category
+// Get all categories
+router.get("/categories", getJobCategories);
+
+// Get jobs by category
 router.get("/category/:category", getJobsByCategory);
 
-// single job
+// Get single job
 router.get("/:id", getSingleJob);
 
 // update job

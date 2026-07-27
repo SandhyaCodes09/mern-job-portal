@@ -108,21 +108,45 @@ const getSingleJob = async (req, res) => {
 };
 
 // Get All Jobs
+// const getJobs = async (req, res) => {
+
+//    try {
+
+//       const jobs = await Job.find();
+
+//       res.status(200).json(jobs);
+
+//    } catch (error) {
+
+//       res.status(500).json({
+//          message: "Server error",
+//       });
+
+//    }
+
+// };
+
 const getJobs = async (req, res) => {
 
-   try {
+    try {
 
-      const jobs = await Job.find();
+        const filter = {};
 
-      res.status(200).json(jobs);
+        if (req.query.category) {
+            filter.category = req.query.category;
+        }
 
-   } catch (error) {
+        const jobs = await Job.find(filter);
 
-      res.status(500).json({
-         message: "Server error",
-      });
+        res.status(200).json(jobs);
 
-   }
+    } catch (error) {
+
+        res.status(500).json({
+            message: error.message
+        });
+
+    }
 
 };
 
@@ -148,6 +172,47 @@ const getJobsByCategory = async (req, res) => {
       });
 
    }
+
+};
+
+// =======================================
+// Get All Categories
+// =======================================
+
+const getJobCategories = async (req, res) => {
+
+    try {
+
+        const categories = await Job.aggregate([
+            {
+                $group: {
+                    _id: "$category",
+                    count: { $sum: 1 }
+                }
+            },
+            {
+                $project: {
+                    _id: 0,
+                    name: "$_id",
+                    count: 1
+                }
+            },
+            {
+                $sort: {
+                    name: 1
+                }
+            }
+        ]);
+
+        res.status(200).json(categories);
+
+    } catch (error) {
+
+        res.status(500).json({
+            message: error.message
+        });
+
+    }
 
 };
 
@@ -307,13 +372,14 @@ const updateJob = async (req, res) => {
 };
 
 module.exports = {
-   getJobs,
-   createJob,
-   getSingleJob,
-   getJobsByCategory,
-   getEmployerJobs,
-   deleteJob,
-   updateJob   
+  getJobs,
+  createJob,
+  getSingleJob,
+  getJobsByCategory,
+  getJobCategories,
+  getEmployerJobs,
+  deleteJob,
+  updateJob
 };
 
 

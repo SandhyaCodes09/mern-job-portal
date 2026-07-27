@@ -43,7 +43,7 @@ export default function EmployerNavbar() {
           <div className="hidden lg:flex absolute left-1/2 -translate-x-1/2">
             <div className="flex items-center gap-10">
               <NavLink
-                to="/employer"
+                to={user?.role === "employer" ? "/employer" : "/user"}
                 className={({ isActive }) =>
                   isActive
                     ? "font-semibold text-blue-700 border-b-2 border-blue-700 pb-1"
@@ -122,9 +122,17 @@ export default function EmployerNavbar() {
                     {user?.first_name} {user?.last_name}
                   </h3>
 
-                  <p className="text-xs text-gray-500">
+                  {/* <p className="text-xs text-gray-500">
                     {user?.company || "Employer"}
-                  </p>
+                  </p> */}
+                  <p className="text-xs text-gray-500">
+                    {
+                        user?.role === "employer"
+                            ? (user?.company || "Employer")
+                            : "Job Seeker"
+                    }
+                </p>
+
                 </div>
 
                 <ChevronDown size={18} />
@@ -133,18 +141,25 @@ export default function EmployerNavbar() {
               {profileOpen && (
                 <div className="absolute right-0 mt-4 w-56 bg-white rounded-xl shadow-xl border overflow-hidden">
                   <Link
-                    to="/employer/profile"
+                   to="/employer/profile"
                     className="block px-5 py-3 hover:bg-gray-100"
                   >
                     👤 My Profile
                   </Link>
 
-                  <Link
+                  {/* <Link
                     to="/employer/profile/edit"
                     className="block px-5 py-3 hover:bg-gray-100"
                   >
                     ✏ Edit Profile
-                  </Link>
+                  </Link> */}
+
+                  <Link
+                    to="/employer/profile/edit"
+                    className="block px-5 py-3 hover:bg-gray-100"
+                   >
+                    ✏ Edit Profile
+                   </Link>
 
                   <button
                     onClick={logout}
@@ -189,7 +204,11 @@ export default function EmployerNavbar() {
                 </h3>
 
                 <p className="text-sm text-gray-500">
-                  {user?.company || "Employer"}
+                   {
+                  user?.role === "employer"
+                  ? (user?.company || "Employer")
+                  : "Job Seeker"
+                  }
                 </p>
               </div>
             </div>
@@ -197,7 +216,7 @@ export default function EmployerNavbar() {
             {/* Navigation */}
 
             <NavLink
-              to="/employer"
+              to={user?.role === "employer" ? "/employer" : "/user"}
               onClick={() => setMobileOpen(false)}
               className={({ isActive }) =>
                 `block px-6 py-4 border-b transition ${
@@ -210,6 +229,8 @@ export default function EmployerNavbar() {
               📊 Dashboard
             </NavLink>
 
+
+            {user?.role === "employer" && (
             <NavLink
               to="/employer/create-job"
               onClick={() => setMobileOpen(false)}
@@ -223,7 +244,9 @@ export default function EmployerNavbar() {
             >
               ➕ Post Job
             </NavLink>
-
+          )}
+            
+            {user?.role === "user" && (
             <NavLink
               to="/employer/my-jobs"
               onClick={() => setMobileOpen(false)}
@@ -237,7 +260,9 @@ export default function EmployerNavbar() {
             >
               💼 My Jobs
             </NavLink>
-
+            )}
+            
+            {user?.role === "employer" && (
             <NavLink
               to="/employer/applications"
               onClick={() => setMobileOpen(false)}
@@ -251,9 +276,10 @@ export default function EmployerNavbar() {
             >
               📄 Applications
             </NavLink>
+            )}
 
             <NavLink
-              to="/employer/profile"
+              to={user?.role === "employer" ? "/employer/profile" : "/user/profile"}
               onClick={() => setMobileOpen(false)}
               className={({ isActive }) =>
                 `block px-6 py-4 border-b transition ${
@@ -267,7 +293,9 @@ export default function EmployerNavbar() {
             </NavLink>
 
             <NavLink
-              to="/employer/profile/edit"
+              to={user?.role === "employer"
+              ? "/employer/profile/edit"
+              : "/user/profile/edit"}
               onClick={() => setMobileOpen(false)}
               className={({ isActive }) =>
                 `block px-6 py-4 border-b transition ${
@@ -294,285 +322,3 @@ export default function EmployerNavbar() {
     </nav>
   );
 }
-
-// import { useState } from "react";
-// import { Link, NavLink, useNavigate } from "react-router-dom";
-// import { Menu, X, Bell, ChevronDown } from "lucide-react";
-
-// export default function EmployerNavbar() {
-
-//     const navigate = useNavigate();
-
-//     const [mobileOpen, setMobileOpen] = useState(false);
-//     const [profileOpen, setProfileOpen] = useState(false);
-
-//     const user = JSON.parse(localStorage.getItem("user"));
-
-//     const logout = () => {
-
-//         localStorage.removeItem("user");
-
-//         navigate("/login");
-
-//     };
-
-//     return (
-
-//         <nav className="bg-white shadow-md sticky top-0 z-50">
-
-//             <div className="max-w-7xl mx-auto px-6">
-
-//                 <div className="grid grid-cols-3 items-center h-20">
-
-//                     {/* Logo */}
-
-//                     <Link
-//                         to="/employer"
-//                         className="flex items-center gap-3"
-//                     >
-
-//                         <div className="w-12 h-12 rounded-xl bg-blue-700 text-white flex items-center justify-center text-xl font-bold">
-
-//                             {user?.first_name?.charAt(0)?.toUpperCase()}
-
-//                         </div>
-
-//                         <div>
-
-//                             <h2 className="text-3xl font-bold text-blue-700">
-
-//                                 Employer Dashboard
-
-//                             </h2>
-
-//                         </div>
-
-//                     </Link>
-
-//                     {/* Desktop Menu */}
-
-//                     <div className="hidden lg:flex items-center gap-8">
-
-//                         <NavLink
-//                             to="/employer"
-//                             className={({ isActive }) =>
-//                                 isActive
-//                                     ? "text-blue-700 font-semibold"
-//                                     : "text-gray-700 hover:text-blue-700"
-//                             }
-//                         >
-//                             Dashboard
-//                         </NavLink>
-
-//                         <NavLink
-//                             to="/create-job"
-//                             className={({ isActive }) =>
-//                                 isActive
-//                                     ? "text-blue-700 font-semibold"
-//                                     : "text-gray-700 hover:text-blue-700"
-//                             }
-//                         >
-//                             Post Job
-//                         </NavLink>
-
-//                         <NavLink
-//                             to="/employer/my-jobs"
-//                             className={({ isActive }) =>
-//                                 isActive
-//                                     ? "text-blue-700 font-semibold"
-//                                     : "text-gray-700 hover:text-blue-700"
-//                             }
-//                         >
-//                             My Jobs
-//                         </NavLink>
-
-//                         <NavLink
-//                             to="/employer/applications"
-//                             className={({ isActive }) =>
-//                                 isActive
-//                                     ? "text-blue-700 font-semibold"
-//                                     : "text-gray-700 hover:text-blue-700"
-//                             }
-//                         >
-//                             Applications
-//                         </NavLink>
-
-//                     </div>
-
-//                     {/* Right */}
-
-//                     <div className="hidden lg:flex items-center gap-6">
-
-//                         <button className="relative">
-
-//                             <Bell size={23} />
-
-//                             <span className="absolute -top-2 -right-2 w-5 h-5 rounded-full bg-red-600 text-white text-xs flex items-center justify-center">
-
-//                                 0
-
-//                             </span>
-
-//                         </button>
-
-//                         <div className="relative">
-
-//                             <button
-
-//                                 onClick={() => setProfileOpen(!profileOpen)}
-
-//                                 className="flex items-center gap-3"
-
-//                             >
-
-//                                 <img
-
-//                                     src={
-//                                         user?.profileImage ||
-//                                         `https://ui-avatars.com/api/?name=${user?.first_name}+${user?.last_name}&background=2563eb&color=fff`
-//                                     }
-
-//                                     alt="profile"
-
-//                                     className="w-12 h-12 rounded-full border-2 border-blue-600"
-
-//                                 />
-
-//                                 <div className="text-left">
-
-//                                     <h3 className="font-semibold">
-
-//                                         {user?.first_name} {user?.last_name}
-
-//                                     </h3>
-
-//                                     <p className="text-sm text-gray-500">
-
-//                                         {user?.company || "Employer"}
-
-//                                     </p>
-
-//                                 </div>
-
-//                                 <ChevronDown size={18} />
-
-//                             </button>
-
-//                             {profileOpen && (
-
-//                                 <div className="absolute right-0 mt-4 w-52 bg-white rounded-xl shadow-xl border">
-
-//                                     <Link
-//                                         to="/employer/profile"
-//                                         className="block px-5 py-3 hover:bg-gray-100"
-//                                     >
-//                                         Profile
-//                                     </Link>
-
-//                                     <Link
-//                                         to="/employer/profile/edit"
-//                                         className="block px-5 py-3 hover:bg-gray-100"
-//                                     >
-//                                         Edit Profile
-//                                     </Link>
-
-//                                     <button
-
-//                                         onClick={logout}
-
-//                                         className="w-full text-left px-5 py-3 text-red-600 hover:bg-red-50"
-
-//                                     >
-
-//                                         Logout
-
-//                                     </button>
-
-//                                 </div>
-
-//                             )}
-
-//                         </div>
-
-//                     </div>
-
-//                     {/* Mobile Button */}
-
-//                     <button
-
-//                         className="lg:hidden"
-
-//                         onClick={() => setMobileOpen(!mobileOpen)}
-
-//                     >
-
-//                         {mobileOpen ? <X /> : <Menu />}
-
-//                     </button>
-
-//                 </div>
-
-//             </div>
-
-//             {/* Mobile Menu */}
-
-//             {mobileOpen && (
-
-//                 <div className="lg:hidden bg-white border-t">
-
-//                     <NavLink
-//                         to="/employer"
-//                         className="block px-6 py-4 border-b"
-//                     >
-//                         Dashboard
-//                     </NavLink>
-
-//                     <NavLink
-//                         to="/create-job"
-//                         className="block px-6 py-4 border-b"
-//                     >
-//                         Post Job
-//                     </NavLink>
-
-//                     <NavLink
-//                         to="/employer/my-jobs"
-//                         className="block px-6 py-4 border-b"
-//                     >
-//                         My Jobs
-//                     </NavLink>
-
-//                     <NavLink
-//                         to="/employer/applications"
-//                         className="block px-6 py-4 border-b"
-//                     >
-//                         Applications
-//                     </NavLink>
-
-//                     <NavLink
-//                         to="/employer/profile"
-//                         className="block px-6 py-4 border-b"
-//                     >
-//                         Profile
-//                     </NavLink>
-
-//                     <button
-
-//                         onClick={logout}
-
-//                         className="block w-full text-left px-6 py-4 text-red-600"
-
-//                     >
-
-//                         Logout
-
-//                     </button>
-
-//                 </div>
-
-//             )}
-
-//         </nav>
-
-//     );
-
-// }
