@@ -101,6 +101,8 @@ user.companyLogo
 
 className="w-28 h-28 rounded-full border-4 border-blue-600"
 
+alt = "Employer Profile"
+
 />
 
 

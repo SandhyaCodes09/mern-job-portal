@@ -59,25 +59,25 @@ export default function EmployerDashboard() {
   // Delete Job
   // ============================
 
-  const handleDelete = async (id) => {
-    const confirmDelete = window.confirm(
-      "Are you sure you want to delete this job?",
-    );
+  // const handleDelete = async (id) => {
+  //   const confirmDelete = window.confirm(
+  //     "Are you sure you want to delete this job?",
+  //   );
 
-    if (!confirmDelete) return;
+  //   if (!confirmDelete) return;
 
-    try {
-      await deleteJob(id);
+  //   try {
+  //     await deleteJob(id);
 
-      alert("Job deleted successfully");
+  //     alert("Job deleted successfully");
 
-      fetchJobs();
-    } catch (error) {
-      console.log(error);
+  //     fetchJobs();
+  //   } catch (error) {
+  //     console.log(error);
 
-      alert("Something went wrong");
-    }
-  };
+  //     alert("Something went wrong");
+  //   }
+  // };
 
   return (
     <div className="min-h-screen bg-slate-100">
