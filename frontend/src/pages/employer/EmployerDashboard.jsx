@@ -9,7 +9,7 @@ import EmployerQuickAction from "../../components/employer/EmployerQuickAction";
 import EmployerNavbar from "../../components/employer/EmployerNavbar";
 import EmployerFooter from "../../components/employer/EmployerFooter";
 
-import { getEmployerJobs, deleteJob } from "../../services/JobService";
+import { getEmployerJobs } from "../../services/JobService";
 
 export default function EmployerDashboard() {
   const [jobs, setJobs] = useState([]);
