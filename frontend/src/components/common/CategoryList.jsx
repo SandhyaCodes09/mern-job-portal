@@ -2,13 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
-export default function CategoryList({ category, setCategory }) {
-  const navigate = useNavigate();
-  const [categories, setCategories] = useState([]);
-  const [showAllCategories, setShowAllCategories] = useState(false);
-  const [loading, setLoading] = useState(true);
-
-  // 1. Static Fallback Array (Unique Icons & Pre-formatted Text)
+ // 1. Static Fallback Array (Unique Icons & Pre-formatted Text)
   const staticCategories = [
     {
       name: "Frontend Developer",
@@ -24,6 +18,13 @@ export default function CategoryList({ category, setCategory }) {
     { name: "DevOps", label: "DevOps", count: "60+", icon: "☁️" },
     { name: "Database", label: "Database", count: "40+", icon: "🗄️" },
   ];
+
+export default function CategoryList({ category, setCategory }) {
+  const navigate = useNavigate();
+  const [categories, setCategories] = useState([]);
+  const [showAllCategories, setShowAllCategories] = useState(false);
+  const [loading, setLoading] = useState(true);
+
 
   // 2. Dynamic Fetching from Database
   useEffect(() => {

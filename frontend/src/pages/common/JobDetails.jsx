@@ -6,13 +6,6 @@ import axios from "axios";
 import Navbar from "../../components/common/Navbar";
 import Footer from "../../components/common/Footer";
 
-export default function JobDetails() {
-  const { id } = useParams();
-
-  const [job, setJob] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [applied, setApplied] = useState(false);
-
   // Static Fallback Data (Jab DB connect na ho)
   const staticFallbackJobs = {
     "static-1": {
@@ -66,6 +59,14 @@ export default function JobDetails() {
     },
   };
 
+export default function JobDetails() {
+  const { id } = useParams();
+
+  const [job, setJob] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [applied, setApplied] = useState(false);
+
+  
   useEffect(() => {
     const fetchJob = async () => {
       try {

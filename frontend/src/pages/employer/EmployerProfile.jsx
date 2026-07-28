@@ -9,7 +9,7 @@ import {
     Mail,
     Phone,
     MapPin,
-    Globe
+    // Globe
 }
 from "lucide-react";
 
