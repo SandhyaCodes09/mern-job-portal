@@ -2,7 +2,7 @@
 // React & Router Imports
 // ===============================================
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 
 // ===============================================
@@ -28,6 +28,8 @@ export default function UserDashboard() {
   // ---------------------------------------------
   // States
   // ---------------------------------------------
+  const navigate = useNavigate();
+  const [menuOpen, setMenuOpen] = useState(false);
   const [user, setUser] = useState(null);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
@@ -49,6 +51,46 @@ export default function UserDashboard() {
 
     fetchUser();
   }, []);
+
+  // Logout Handler
+//   const handleLogout = async () => {
+//     try {
+//       await axios.post(
+//         "http://localhost:5000/api/auth/logout",
+//         {},
+//         {
+//           withCredentials: true,
+//         }
+//       );
+//       setUser(null);
+//       setMenuOpen(false);
+//       navigate("/login");
+//     } catch (error) {
+//       console.log(error);
+//     }
+//   };
+
+// Logout Handler
+  const handleLogout = async () => {
+    try {
+      await axios.post(
+        "http://localhost:5000/api/auth/logout",
+        {},
+        {
+          withCredentials: true,
+        }
+      );
+      setMenuOpen(false);
+      navigate("/login");
+    } catch (error) {
+      console.log(error);
+      // Agar backend logout API fail bhi ho jaye, toh bhi user ko login page par bhejne ke liye:
+      localStorage.removeItem("user");
+      navigate("/login");
+    }
+  };
+
+
 
   // ---------------------------------------------
   // Loading Screen
@@ -142,16 +184,15 @@ export default function UserDashboard() {
                     My Profile
                   </Link>
 
+        
+
                   <button
-                    onClick={() => {
-                      setProfileOpen(false);
-                      // Add logout logic here
-                    }}
+                    onClick={handleLogout}
                     className="w-full flex items-center gap-3 text-left px-4 py-3 text-sm font-bold hover:bg-red-50 text-red-600 transition border-t border-slate-100"
-                  >
-                    <LogOut size={16} />
+                    >
                     Logout
-                  </button>
+                    </button>
+                
                 </div>
               )}
             </div>

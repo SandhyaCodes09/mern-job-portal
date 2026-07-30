@@ -22,6 +22,7 @@ export default function Login() {
 
     try {
       const res = await loginUser(form);
+      console.log(res.user.role);
 
       // Store logged in user
       localStorage.setItem("user", JSON.stringify(res.user));

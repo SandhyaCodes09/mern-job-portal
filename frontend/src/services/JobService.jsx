@@ -40,26 +40,6 @@ export const getEmployerJobs = async () => {
 };
 
 // ======================================
-// Delete Job
-// ======================================
-
-export const deleteJob = async (id) => {
-
-    const res = await axios.delete(
-
-        `http://localhost:5000/api/jobs/${id}`,
-
-        {
-            withCredentials: true
-        }
-
-    );
-
-    return res.data;
-
-};
-
-// ======================================
 // Update Job
 // ======================================
 
@@ -80,3 +60,24 @@ export const updateJob = async (id, jobData) => {
     return res.data;
 
 };
+
+// ======================================
+// Delete Job
+// ======================================
+
+export const deleteJob = async (id) => {
+
+    const res = await axios.delete(
+
+        `http://localhost:5000/api/jobs/${id}`,
+
+        {
+            withCredentials: true
+        }
+
+    );
+
+    return res.data;
+
+};
+
