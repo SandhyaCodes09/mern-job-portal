@@ -29,7 +29,7 @@ export default function UserDashboard() {
   // States
   // ---------------------------------------------
   const navigate = useNavigate();
-  const [menuOpen, setMenuOpen] = useState(false);
+  // const [menuOpen, setMenuOpen] = useState(false);
   const [user, setUser] = useState(null);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
@@ -80,7 +80,7 @@ export default function UserDashboard() {
           withCredentials: true,
         }
       );
-      setMenuOpen(false);
+      // setMenuOpen(false);
       navigate("/login");
     } catch (error) {
       console.log(error);
