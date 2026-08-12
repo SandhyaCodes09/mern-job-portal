@@ -8,14 +8,14 @@ import {
   CheckCircle2,
   XCircle,
   Search,
-  Filter,
+  // Filter,
   FileText,
   Sparkles,
   ArrowLeft,
   Loader2,
   ExternalLink,
-  ChevronRight,
-  User,
+  // ChevronRight,
+  // User,
   Briefcase,
 } from "lucide-react";
 

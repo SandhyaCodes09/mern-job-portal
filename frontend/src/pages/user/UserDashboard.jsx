@@ -16,7 +16,7 @@ import {
   ChevronDown,
   Menu,
   X,
-  LogOut,
+  // LogOut,
   UserCheck,
 } from "lucide-react";
 import { roleLabel } from "../../utils/RoleLabel";
