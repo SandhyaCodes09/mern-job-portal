@@ -89,9 +89,9 @@ export default function Navbar() {
             to="/"
             onClick={() => setMenuOpen(false)}
             className={({ isActive }) =>
-              `text-sm font-bold transition-colors ${
+              `text-sm font-bold transition-colors outline-none focus:outline-none ${
                 isActive
-                  ? "text-indigo-400 underline underline-offset-8 stroke-2"
+                  ? "text-indigo-400 border-b-2 border-indigo-400 pb-0.5"
                   : "text-slate-300 hover:text-white"
               }`
             }
@@ -104,9 +104,9 @@ export default function Navbar() {
             to="/jobs"
             onClick={() => setMenuOpen(false)}
             className={({ isActive }) =>
-              `text-sm font-bold transition-colors ${
+              `text-sm font-bold transition-colors outline-none focus:outline-none ${
                 isActive
-                  ? "text-indigo-400 underline underline-offset-8 stroke-2"
+                  ? "text-indigo-400 border-b-2 border-indigo-400 pb-0.5"
                   : "text-slate-300 hover:text-white"
               }`
             }
@@ -122,7 +122,7 @@ export default function Navbar() {
                 to={user.role === "employer" ? "/employer" : "/user"}
                 onClick={() => setMenuOpen(false)}
                 className={({ isActive }) =>
-                  `flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs sm:text-sm font-bold transition-all ${
+                  `flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs sm:text-sm font-bold transition-all outline-none focus:outline-none ${
                     isActive
                       ? "bg-indigo-600 text-white shadow-sm"
                       : "bg-slate-800 text-slate-200 hover:bg-slate-700"
@@ -138,7 +138,7 @@ export default function Navbar() {
                 <div className="relative w-full md:w-auto">
                   <button
                     onClick={() => setResumeMenu(!resumeMenu)}
-                    className="text-xs sm:text-sm font-bold text-slate-300 hover:text-white flex items-center gap-1.5 py-1 cursor-pointer"
+                    className="text-xs sm:text-sm font-bold text-slate-300 hover:text-white flex items-center gap-1.5 py-1 cursor-pointer focus:outline-none"
                   >
                     <span>📄 Resume</span>
                     <span className="text-[10px]">▼</span>
@@ -196,7 +196,7 @@ export default function Navbar() {
               {/* Logout Button */}
               <button
                 onClick={handleLogout}
-                className="bg-rose-500/10 hover:bg-rose-600 text-rose-400 hover:text-white border border-rose-500/30 px-4 py-1.5 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer"
+                className="bg-rose-500/10 hover:bg-rose-600 text-rose-400 hover:text-white border border-rose-500/30 px-4 py-1.5 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer focus:outline-none"
               >
                 Logout
               </button>
