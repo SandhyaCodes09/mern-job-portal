@@ -22,6 +22,8 @@ import Jobs from "./pages/common/Jobs";
 import UserDashboard from "./pages/user/UserDashboard";
 import UpdateProfile from "./pages/user/UpdateProfile";
 import UserProfile from "./pages/user/UserProfile";
+import UserAppliedJobs from "./pages/user/UserAppliedJobs";
+import UserSavedJobs from "./pages/user/UserSavedJobs";
 
 
 
@@ -113,6 +115,16 @@ function App() {
           element={<UserDashboard />}
         />
 
+        <Route
+          path="/applications"
+          element={<UserAppliedJobs />}
+        />
+
+        <Route
+          path="/saved-jobs"
+          element={<UserSavedJobs />}
+        />
+
         <Route 
           path="/user/profile" 
           element={<UserProfile />} 
@@ -124,9 +136,6 @@ function App() {
           path="/user/profile/edit"
           element={<UpdateProfile />}
         />
-
-
-
 
 
 

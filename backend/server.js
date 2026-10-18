@@ -60,6 +60,12 @@ app.get("/", (req,res) => {
     res.json({ message: "API Running..." });
 });
 
+// application route
+
+const applicationRoutes = require("./routes/applicationRoutes");
+app.use("/api/applications", applicationRoutes);
+
+
 // start server
 const port = process.env.PORT || 5000;
 

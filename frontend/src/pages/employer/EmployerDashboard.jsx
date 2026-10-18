@@ -16,11 +16,21 @@ export default function EmployerDashboard() {
   const [jobs, setJobs] = useState([]);
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+ const [applications, setApplications] = useState([]);
 
-  useEffect(() => {
+useEffect(() => {
+  fetchJobs();
+  fetchUser();
+  fetchApplications();
+
+  // Refresh dashboard data every 10 seconds
+  const intervalId = setInterval(() => {
     fetchJobs();
-    fetchUser();
-  }, []);
+    fetchApplications();
+  }, 10000);
+
+  return () => clearInterval(intervalId);
+}, []);
 
   const fetchUser = async () => {
     try {
@@ -45,12 +55,48 @@ export default function EmployerDashboard() {
     }
   };
 
+const fetchApplications = async () => {
+  try {
+    const res = await axios.get(
+      "http://localhost:5000/api/applications/employer",
+      { withCredentials: true }
+    );
+
+    setApplications(res.data?.applications || []);
+  } catch (error) {
+    console.error(
+      "Error fetching employer applications:",
+      error.response?.data || error.message
+    );
+  }
+};
+
   // Dynamic Metrics
-  const totalJobsCount = jobs.length;
-  const activeJobsCount = jobs.filter((j) => (j.status ? j.status === "active" : true)).length;
-  const totalApplicationsCount = jobs.reduce((acc, job) => {
-    return acc + (job.applications?.length || job.applicationCount || 0);
-  }, 0);
+
+  // Dynamic Metrics
+const totalJobsCount = jobs.length;
+
+const activeJobsCount = jobs.filter((job) =>
+  job.status ? job.status.toLowerCase() === "active" : true
+).length;
+
+// Count actual application documents from ApplicationModel
+const totalApplicationsCount = applications.length;
+
+// Count applications for each job
+const getJobApplicationCount = (job) => {
+  const jobId = String(job._id || job.id);
+
+  return applications.filter((application) => {
+    const appliedJobId =
+      application.job?._id ||
+      application.job_id?._id ||
+      application.job_id;
+
+    return appliedJobId && String(appliedJobId) === jobId;
+  }).length;
+};
+
 
   // Animations
   const containerVariants = {
@@ -195,7 +241,7 @@ export default function EmployerDashboard() {
                           <span className="text-emerald-600 font-semibold">{job.jobType || job.type || "Full-time"}</span>
                           <span>•</span>
                           <span className="text-indigo-600 font-medium">
-                            {job.applications?.length || job.applicationCount || 0} Applications
+                            {getJobApplicationCount(job)} Applications
                           </span>
                         </div>
                       </div>
