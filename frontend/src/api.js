@@ -1,13 +1,9 @@
+
 import axios from "axios";
 
-// Create axios instance
 const api = axios.create({
-
-    baseURL: "http://localhost:5000/api",
-
-    // Allow cookies to be sent with requests
-    withCredentials: true,
-
+  baseURL: process.env.REACT_APP_API_URL || "http://localhost:5000",
+  withCredentials: true,
 });
 
 export default api;

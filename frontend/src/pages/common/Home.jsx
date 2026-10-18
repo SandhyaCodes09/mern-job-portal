@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+// import axios from "axios";
+import api from "../../api";
 
 // Components
 import Navbar from "../../components/common/Navbar";
@@ -39,7 +40,7 @@ export default function Home() {
   useEffect(() => {
     const fetchJobs = async () => {
       try {
-        const res = await axios.get("http://localhost:5000/api/jobs");
+       const res = await api.get("/api/jobs");
 
         // Support both array and { jobs: [] } response formats
         const jobsData = Array.isArray(res.data)

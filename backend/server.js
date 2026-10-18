@@ -46,28 +46,19 @@ app.use(cookieParser());
 // );
 
 
+
 const allowedOrigins = [
-  "http://localhost:3000",
-  "http://localhost:5173",
-  "https://mern-job-portal-3xium0vyv-sandhya-projects2.vercel.app",
-  process.env.FRONTEND_URL,
-].filter(Boolean);
+"http://localhost:3000",
+"http://localhost:5173",
+"https://mern-job-portal-henna.vercel.app",
+];
 
 app.use(
-  cors({
-    origin: (origin, callback) => {
-      // Allow requests without an Origin header, e.g. server-to-server tools
-      if (!origin || allowedOrigins.includes(origin)) {
-        return callback(null, true);
-      }
-
-      return callback(new Error(`CORS blocked origin: ${origin}`));
-    },
+cors({
+    origin: allowedOrigins,
     credentials: true,
-  })
+})
 );
-
-
 
 
 // routes
