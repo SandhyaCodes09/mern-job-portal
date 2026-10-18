@@ -47,18 +47,26 @@ app.use(cookieParser());
 
 
 
+
 const allowedOrigins = [
-"http://localhost:3000",
-"http://localhost:5173",
-"https://mern-job-portal-henna.vercel.app",
+  "http://localhost:3000",
+  "http://localhost:5173",
+  "https://mern-job-portal-henna.vercel.app",
 ];
 
 app.use(
-cors({
-    origin: allowedOrigins,
+  cors({
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+
+      return callback(new Error(`CORS blocked origin: ${origin}`));
+    },
     credentials: true,
-})
+  })
 );
+
 
 
 // routes
