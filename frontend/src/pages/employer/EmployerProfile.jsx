@@ -34,8 +34,7 @@ export default function EmployerProfile() {
       try {
         setFetching(true);
         // Cookie-based user profile fetch
-       const res = await API.get(`/jobs/${id}`);
-
+        const res = await API.get("/auth/me");
         if (isMounted) {
           const userData = res.data?.user || res.data || {};
           setUser(userData);
