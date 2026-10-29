@@ -44,7 +44,7 @@ export default function UserDashboard() {
 
   // Saved jobs count is not connected until its API is confirmed
   // const [savedJobsCount, setSavedJobsCount] = useState(null);
-  const [savedJobsCount] = useState(null);
+  // const [savedJobsCount] = useState(null);
 
   const appliedJobsCount = applications.length;
 
