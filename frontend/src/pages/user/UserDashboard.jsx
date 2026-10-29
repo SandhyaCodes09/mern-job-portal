@@ -4,7 +4,6 @@ import axios from "axios";
 
 import {
   Bell,
-  Heart,
   Briefcase,
   User,
   ChevronDown,
@@ -42,9 +41,6 @@ export default function UserDashboard() {
   const [jobs, setJobs] = useState([]);
   const [jobsLoading, setJobsLoading] = useState(true);
 
-  // Saved jobs count is not connected until its API is confirmed
-const [savedJobsCount] = useState(null);
-
   const appliedJobsCount = applications.length;
 
   const interviewsCount = applications.filter(
@@ -57,10 +53,9 @@ const [savedJobsCount] = useState(null);
 
     const fetchUser = async () => {
       try {
-        const response = await axios.get(
-          `${API_URL}/auth/me`,
-          { withCredentials: true }
-        );
+        const response = await axios.get(`${API_URL}/auth/me`, {
+          withCredentials: true,
+        });
 
         if (!cancelled) {
           setUser(response.data?.user || response.data);
@@ -254,11 +249,9 @@ const [savedJobsCount] = useState(null);
 
   return (
     <div className="min-h-screen bg-slate-50 w-full flex flex-col font-sans">
-
       {/* NAVBAR */}
       <header className="sticky top-0 z-50 bg-[#111827]/95 backdrop-blur-xl shadow-lg border-b border-slate-800 w-full">
         <div className="w-full px-4 sm:px-8 lg:px-12 h-20 flex justify-between items-center">
-
           <Link
             to="/"
             className="text-2xl sm:text-3xl font-black text-white tracking-tight"
@@ -287,31 +280,15 @@ const [savedJobsCount] = useState(null);
             >
               My Applications
             </Link>
-
-            <Link
-              to="/saved-jobs"
-              className="text-sm font-bold text-slate-300 hover:text-white"
-            >
-              Saved Jobs
-            </Link>
           </nav>
 
           <div className="flex items-center gap-3 sm:gap-5">
-
             <Link
               to="/applications"
               aria-label="View applications"
               className="relative p-2 rounded-xl text-slate-300 hover:bg-slate-800 hover:text-white"
             >
               <Bell size={20} />
-            </Link>
-
-            <Link
-              to="/saved-jobs"
-              aria-label="View saved jobs"
-              className="p-2 rounded-xl text-slate-300 hover:bg-slate-800 hover:text-red-400 hidden sm:block"
-            >
-              <Heart size={20} />
             </Link>
 
             {/* Profile dropdown */}
@@ -410,21 +387,12 @@ const [savedJobsCount] = useState(null);
             >
               My Applications
             </Link>
-
-            <Link
-              to="/saved-jobs"
-              onClick={() => setMobileOpen(false)}
-              className="block py-3 text-slate-200 font-semibold"
-            >
-              Saved Jobs
-            </Link>
           </nav>
         )}
       </header>
 
       {/* MAIN DASHBOARD */}
       <main className="w-full flex-grow px-4 sm:px-8 lg:px-12 py-8 space-y-10">
-
         {/* WELCOME SECTION */}
         <section>
           <div className="bg-gradient-to-br from-[#111827] via-[#1E40AF] to-[#2048BD] rounded-3xl p-8 sm:p-12 text-white shadow-lg relative overflow-hidden">
@@ -465,8 +433,7 @@ const [savedJobsCount] = useState(null);
 
         {/* DASHBOARD STATS */}
         <section>
-          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 sm:gap-6">
-
+          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6">
             {/* Applied jobs */}
             <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-6">
               <div className="flex justify-between items-center">
@@ -490,32 +457,6 @@ const [savedJobsCount] = useState(null);
                 className="inline-flex items-center gap-1 text-xs font-bold text-[#2048BD] mt-4"
               >
                 View applications <ArrowRight size={14} />
-              </Link>
-            </div>
-
-            {/* Saved jobs */}
-            <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-6">
-              <div className="flex justify-between items-center">
-                <div>
-                  <p className="text-slate-400 text-xs font-bold uppercase tracking-wider">
-                    Saved Jobs
-                  </p>
-
-                  <h2 className="text-3xl font-black text-slate-800 mt-2">
-                    {savedJobsCount === null ? "—" : savedJobsCount}
-                  </h2>
-                </div>
-
-                <div className="w-12 h-12 rounded-xl bg-red-50 text-red-500 flex items-center justify-center">
-                  <Heart size={24} />
-                </div>
-              </div>
-
-              <Link
-                to="/saved-jobs"
-                className="inline-flex items-center gap-1 text-xs font-bold text-red-500 mt-4"
-              >
-                View saved jobs <ArrowRight size={14} />
               </Link>
             </div>
 
@@ -761,8 +702,6 @@ const [savedJobsCount] = useState(null);
                           {job.company || "Company"}
                         </p>
                       </div>
-
-                      <Heart size={20} className="text-slate-300 shrink-0" />
                     </div>
 
                     <div className="mt-4 flex gap-2 flex-wrap">
@@ -802,7 +741,6 @@ const [savedJobsCount] = useState(null);
         {/* CAREER TIPS */}
         <section>
           <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
-
             <div className="bg-white rounded-3xl shadow-sm border border-slate-100 p-6 sm:p-8">
               <h2 className="text-lg font-black text-slate-800 mb-5">
                 💡 Career Tips
@@ -869,18 +807,6 @@ const [savedJobsCount] = useState(null);
                 </Link>
 
                 <Link
-                  to="/saved-jobs"
-                  className="flex items-center justify-between p-4 rounded-2xl bg-slate-50 hover:bg-red-50 transition"
-                >
-                  <span className="flex items-center gap-3 font-bold text-slate-700">
-                    <Heart size={19} className="text-red-500" />
-                    Saved Jobs
-                  </span>
-
-                  <ArrowRight size={18} className="text-slate-400" />
-                </Link>
-
-                <Link
                   to="/user/profile"
                   className="flex items-center justify-between p-4 rounded-2xl bg-slate-50 hover:bg-blue-50 transition"
                 >
@@ -932,4 +858,3 @@ const [savedJobsCount] = useState(null);
     </div>
   );
 }
-
