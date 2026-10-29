@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
-import axios from "axios";
+import API from "../../api";
 
 import { roleLabel } from "../../utils/RoleLabel";
 
@@ -16,9 +16,7 @@ export default function Navbar() {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const res = await axios.get("http://localhost:5000/api/auth/me", {
-          withCredentials: true,
-        });
+      const res = await API.get("/auth/me");
         setUser(res.data.user);
       } catch (error) {
         console.log(error);
@@ -31,13 +29,7 @@ export default function Navbar() {
   // Logout Handler
   const handleLogout = async () => {
     try {
-      await axios.post(
-        "http://localhost:5000/api/auth/logout",
-        {},
-        {
-          withCredentials: true,
-        }
-      );
+   await API.post("/auth/logout", {});
       setUser(null);
       setMenuOpen(false);
       navigate("/login");
@@ -148,9 +140,7 @@ export default function Navbar() {
                     <div className="md:absolute right-0 mt-2 w-56 rounded-2xl bg-white text-slate-800 shadow-2xl border border-slate-100 overflow-hidden z-50">
                       {user.resume ? (
                         <>
-                          <a
-                            href={`http://localhost:5000/uploads/resumes/${user.resume}`}
-                            target="_blank"
+                          <a href={`${(process.env.REACT_APP_API_URL || "https://job-frame.onrender.com").replace(/\/+$/, "")}/uploads/resumes/${user.resume}`}                            target="_blank"
                             rel="noreferrer"
                             className="block px-4 py-3 text-xs font-bold hover:bg-slate-50 transition border-b border-slate-100"
                           >
@@ -158,7 +148,7 @@ export default function Navbar() {
                           </a>
 
                           <a
-                            href={`http://localhost:5000/uploads/resumes/${user.resume}`}
+                           href={`${(process.env.REACT_APP_API_URL || "https://job-frame.onrender.com").replace(/\/+$/, "")}/uploads/resumes/${user.resume}`}
                             download
                             className="block px-4 py-3 text-xs font-bold hover:bg-slate-50 transition border-b border-slate-100"
                           >

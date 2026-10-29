@@ -1,7 +1,8 @@
 
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import axios from "axios";
+import API from "../../api";
+
 import {
   BriefcaseBusiness,
   MapPin,
@@ -9,7 +10,6 @@ import {
   RefreshCw,
 } from "lucide-react";
 
-const API_URL = "http://localhost:5000/api";
 
 const statusStyles = {
   Pending: "bg-yellow-100 text-yellow-800",
@@ -27,10 +27,7 @@ export default function UserAppliedJobs() {
     try {
       setError("");
 
-      const res = await axios.get(
-        `${API_URL}/applications/my-applications`,
-        { withCredentials: true }
-      );
+      const res = await API.get("/applications/my-applications");
 
       setApplications(res.data?.applications || []);
     } catch (err) {

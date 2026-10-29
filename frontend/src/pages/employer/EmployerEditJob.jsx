@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { motion } from "framer-motion";
-import axios from "axios";
+import API from "../../api";
+
 import {
   Briefcase,
   Building2,
@@ -47,9 +48,7 @@ export default function EmployerEditJob() {
     const fetchJobDetails = async () => {
       try {
         setFetching(true);
-        const res = await axios.get(`http://localhost:5000/api/jobs/${id}`, {
-          withCredentials: true,
-        });
+       const res = await API.get(`/jobs/${id}`);
         
         const job = res.data?.job || res.data || {};
 

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import API from "../../api";
 import { motion } from "framer-motion";
 import { Briefcase, Plus, TrendingUp, Sparkles, AlertCircle } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -32,16 +32,14 @@ useEffect(() => {
   return () => clearInterval(intervalId);
 }, []);
 
-  const fetchUser = async () => {
-    try {
-      const res = await axios.get("http://localhost:5000/api/auth/me", {
-        withCredentials: true,
-      });
-      setUser(res.data.user || res.data);
-    } catch (error) {
-      console.log("Error fetching user:", error);
-    }
-  };
+const fetchUser = async () => {
+  try {
+    const res = await API.get("/auth/me");
+    setUser(res.data.user || res.data);
+  } catch (error) {
+    console.log("Error fetching user:", error);
+  }
+};
 
   const fetchJobs = async () => {
     try {
@@ -57,10 +55,7 @@ useEffect(() => {
 
 const fetchApplications = async () => {
   try {
-    const res = await axios.get(
-      "http://localhost:5000/api/applications/employer",
-      { withCredentials: true }
-    );
+    const res = await API.get("/applications/employer");
 
     setApplications(res.data?.applications || []);
   } catch (error) {

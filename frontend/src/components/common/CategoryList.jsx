@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import API from "../../api";
 
  // 1. Static Fallback Array (Unique Icons & Pre-formatted Text)
   const staticCategories = [
@@ -26,33 +26,32 @@ export default function CategoryList({ category, setCategory }) {
   const [loading, setLoading] = useState(true);
 
 
+
   // 2. Dynamic Fetching from Database
-  useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const res = await axios.get(
-          "http://localhost:5000/api/jobs/categories",
-        );
+useEffect(() => {
+  const fetchCategories = async () => {
+    try {
+      const res = await API.get("/jobs/categories");
 
-        // Agar DB se categories ka array mile aur khali na ho
-        if (res.data && res.data.length > 0) {
-          setCategories(res.data);
-        } else {
-          setCategories(staticCategories);
-        }
-      } catch (error) {
-        console.warn(
-          "DB disconnect / Error fetching categories, using static fallback:",
-          error,
-        );
+      // Agar DB se categories ka array mile aur khali na ho
+      if (res.data && res.data.length > 0) {
+        setCategories(res.data);
+      } else {
         setCategories(staticCategories);
-      } finally {
-        setLoading(false);
       }
-    };
+    } catch (error) {
+      console.warn(
+        "DB disconnect / Error fetching categories, using static fallback:",
+        error,
+      );
+      setCategories(staticCategories);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    fetchCategories();
-  }, []);
+  fetchCategories();
+}, []);
 
   // Show 3 Categories initially (+ All Categories = 4 Boxes), or ALL when expanded
   const visibleCategories = showAllCategories

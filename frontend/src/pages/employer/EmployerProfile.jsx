@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import axios from "axios";
+import API from "../../api";
+
 import {
   User,
   Mail,
@@ -33,9 +34,7 @@ export default function EmployerProfile() {
       try {
         setFetching(true);
         // Cookie-based user profile fetch
-        const res = await axios.get("http://localhost:5000/api/auth/me", {
-          withCredentials: true,
-        });
+       const res = await API.get(`/jobs/${id}`);
 
         if (isMounted) {
           const userData = res.data?.user || res.data || {};

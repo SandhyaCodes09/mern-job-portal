@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import axios from "axios";
+import API from "../../api";
+
 import {
   Menu,
   X,
@@ -23,26 +25,21 @@ export default function EmployerNavbar() {
   // Retrieve user object from Local Storage
   const user = JSON.parse(localStorage.getItem("user") || "{}");
 
-  // Comprehensive async Logout handler to clear Backend cookies and Frontend storage
   const logout = async () => {
-    try {
-      // Step 1: Request backend to destroy HTTP-only session cookies
-      await axios.post(
-        "http://localhost:5000/api/auth/logout",
-        {},
-        { withCredentials: true }
-      );
-    } catch (error) {
-      console.error("Logout API request failed:", error);
-    } finally {
-      // Step 2: Clear user payload from localStorage
-      localStorage.removeItem("user");
-      localStorage.clear();
+  try {
+    // Backend se HTTP-only session cookie clear karne ki request
+    await API.post("/auth/logout", {});
+  } catch (error) {
+    console.error("Logout API request failed:", error);
+  } finally {
+    // Frontend storage clear karna
+    localStorage.removeItem("user");
+    localStorage.clear();
 
-      // Step 3: Redirect user to the login screen
-      navigate("/login");
-    }
-  };
+    // Login page par redirect
+    navigate("/login");
+  }
+};
 
   // NavLink CSS class generator for Desktop menu
   const navLinkClass = ({ isActive }) =>

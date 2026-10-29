@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
+import API from "../../api";
 import { useSearchParams, Link } from "react-router-dom";
 import Navbar from "../../components/common/Navbar";
+
 
 export default function Jobs() {
   const [jobs, setJobs] = useState([]);
@@ -15,9 +16,7 @@ export default function Jobs() {
   useEffect(() => {
     const fetchJobs = async () => {
       try {
-        const res = await axios.get(
-          "http://localhost:5000/api/jobs"
-        );
+        const res = await API.get("/jobs");
 
         // API array ya { jobs: [...] } response handle karo
         const jobsData = Array.isArray(res.data)

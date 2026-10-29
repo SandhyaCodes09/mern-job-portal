@@ -1,7 +1,7 @@
 
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import axios from "axios";
+import API from "../../api";
 import {
   Bookmark,
   BriefcaseBusiness,
@@ -10,7 +10,6 @@ import {
   RefreshCw,
 } from "lucide-react";
 
-const API_URL = "http://localhost:5000/api";
 
 export default function UserSavedJobs() {
   const [savedJobs, setSavedJobs] = useState([]);
@@ -22,9 +21,7 @@ export default function UserSavedJobs() {
     try {
       setError("");
 
-      const res = await axios.get(`${API_URL}/saved-jobs`, {
-        withCredentials: true,
-      });
+    const res = await API.get("/saved-jobs");
 
       const jobs = res.data?.savedJobs || res.data?.jobs || [];
 
@@ -62,9 +59,7 @@ export default function UserSavedJobs() {
     try {
       setRemovingId(jobId);
 
-      await axios.delete(`${API_URL}/saved-jobs/${jobId}`, {
-        withCredentials: true,
-      });
+      await API.delete(`/saved-jobs/${jobId}`);
 
       setSavedJobs((previousJobs) =>
         previousJobs.filter(

@@ -1,12 +1,10 @@
-
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import axios from "axios";
+import API from "../../api";
 
 import Navbar from "../../components/common/Navbar";
 import Footer from "../../components/common/Footer";
 
-const API_URL = "http://localhost:5000/api";
 
 export default function JobDetails() {
   const { id } = useParams();
@@ -37,9 +35,7 @@ export default function JobDetails() {
 
       try {
         // 1. Fetch job details
-        const jobResponse = await axios.get(
-          `${API_URL}/jobs/${id}`
-        );
+       const jobResponse = await API.get(`/jobs/${id}`);
 
         const jobData = jobResponse.data?.job || jobResponse.data;
 
@@ -54,9 +50,8 @@ export default function JobDetails() {
 
         // 2. Check previous applications
         try {
-          const applicationsResponse = await axios.get(
-            `${API_URL}/applications/my-applications`,
-            { withCredentials: true }
+          const applicationsResponse = await API.get(
+            "/applications/my-applications"
           );
 
           const applications =
@@ -114,10 +109,9 @@ export default function JobDetails() {
       setApplyError("");
       setApplyMessage("");
 
-      const response = await axios.post(
-        `${API_URL}/applications/${job._id}`,
-        {},
-        { withCredentials: true }
+      const response = await API.post(
+        `/applications/${job._id}`,
+        {}
       );
 
       setApplied(true);

@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import axios from "axios";
+import API from "../../api";
+
 import {
   User,
   Mail,
@@ -45,9 +46,7 @@ export default function EmployerEditProfile() {
     const fetchUser = async () => {
       try {
         setFetching(true);
-        const res = await axios.get("http://localhost:5000/api/auth/me", {
-          withCredentials: true, // Includes httpOnly cookie in request
-        });
+        const res = await API.get("/auth/me");
 
         const userData = res.data?.user || res.data;
 

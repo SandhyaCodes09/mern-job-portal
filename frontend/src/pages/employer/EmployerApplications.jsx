@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import axios from "axios";
+import API from "../../api";
 import {
   Users,
   Clock,
@@ -19,7 +19,6 @@ import {
 import EmployerNavbar from "../../components/employer/EmployerNavbar";
 import EmployerFooter from "../../components/employer/EmployerFooter";
 
-const API_URL = "http://localhost:5000/api/applications";
 
 export default function EmployerApplications() {
   const navigate = useNavigate();
@@ -39,9 +38,7 @@ export default function EmployerApplications() {
     try {
       setLoading(true);
 
-      const res = await axios.get(`${API_URL}/employer`, {
-        withCredentials: true,
-      });
+    const res = await API.get("/applications/employer");
 
       setApplications(res.data?.applications || []);
     } catch (error) {
@@ -60,10 +57,9 @@ export default function EmployerApplications() {
     try {
       setUpdatingId(applicationId);
 
-      await axios.put(
-        `${API_URL}/employer/${applicationId}`,
-        { status: newStatus },
-        { withCredentials: true }
+      await API.put(
+        `/applications/employer/${applicationId}`,
+        { status: newStatus }
       );
 
       setApplications((previousApplications) =>

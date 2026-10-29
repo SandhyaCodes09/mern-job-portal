@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import API from "../../api";
 import { Link } from "react-router-dom";
 import { updateProfile } from "../../services/authService";
 import { roleLabel } from "../../utils/RoleLabel";
@@ -16,9 +16,7 @@ export default function EditProfile() {
 
   const fetchUser = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/api/auth/me", {
-        withCredentials: true,
-      });
+      const res = await API.get("/auth/me");
       setUser(res.data.user);
     } catch (error) {
       console.log(error);
@@ -217,16 +215,14 @@ export default function EditProfile() {
                     <div className="flex items-center gap-4 text-xs font-bold mt-3 px-2">
                       <span className="text-slate-500">Current File:</span>
                       <a
-                        href={`http://localhost:5000/uploads/resumes/${user.resume}`}
-                        target="_blank"
+                        href={`${(process.env.REACT_APP_API_URL || "https://job-frame.onrender.com").replace(/\/+$/, "")}/uploads/resumes/${user.resume}`}                        target="_blank"
                         rel="noreferrer"
                         className="text-[#2048BD] hover:underline flex items-center gap-1"
                       >
                         👁 View
                       </a>
                       <a
-                        href={`http://localhost:5000/uploads/resumes/${user.resume}`}
-                        download
+                        href={`${(process.env.REACT_APP_API_URL || "https://job-frame.onrender.com").replace(/\/+$/, "")}/uploads/resumes/${user.resume}`}                        download
                         className="text-emerald-600 hover:underline flex items-center gap-1"
                       >
                         ⬇ Download
