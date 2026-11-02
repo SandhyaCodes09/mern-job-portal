@@ -76,6 +76,8 @@ const allowedOrigins = [
 
   // Test branch frontend
   "https://mern-job-portal-git-api-update-test-sandhya-projects2.vercel.app",
+
+  "https://telent-bridge-git-api-update-test-sandhya-projects2.vercel.app"
 ];
 
 app.use(
