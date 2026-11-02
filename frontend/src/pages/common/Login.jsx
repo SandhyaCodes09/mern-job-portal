@@ -24,8 +24,9 @@ export default function Login() {
       const res = await loginUser(form);
       console.log(res.user.role);
 
-      // Store logged in user
+      // Store logged in user and notify components
       localStorage.setItem("user", JSON.stringify(res.user));
+      window.dispatchEvent(new Event("auth-change"));
       alert("Login Successful");
 
       // Redirect according to role

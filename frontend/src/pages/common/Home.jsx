@@ -40,7 +40,7 @@ export default function Home() {
   useEffect(() => {
     const fetchJobs = async () => {
       try {
-       const res = await api.get("/api/jobs");
+       const res = await api.get("/jobs");
 
         // Support both array and { jobs: [] } response formats
         const jobsData = Array.isArray(res.data)

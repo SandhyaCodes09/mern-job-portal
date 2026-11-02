@@ -8,33 +8,66 @@ export default function Navbar() {
   // States
   const [menuOpen, setMenuOpen] = useState(false);
   const [resumeMenu, setResumeMenu] = useState(false);
-  const [user, setUser] = useState(null);
+
+  // Initialize from localStorage so UI displays logged-in user immediately
+  const [user, setUser] = useState(() => {
+    try {
+      return JSON.parse(localStorage.getItem("user")) || null;
+    } catch {
+      return null;
+    }
+  });
 
   const navigate = useNavigate();
 
-  // Fetch Logged In User
+  // Fetch Logged In User & listen to storage/auth changes
   useEffect(() => {
+    const syncUserFromStorage = () => {
+      try {
+        const stored = JSON.parse(localStorage.getItem("user"));
+        setUser(stored || null);
+      } catch {
+        setUser(null);
+      }
+    };
+
     const fetchUser = async () => {
       try {
-      const res = await API.get("/auth/me");
-        setUser(res.data.user);
+        const res = await API.get("/auth/me");
+        if (res.data?.user) {
+          setUser(res.data.user);
+          localStorage.setItem("user", JSON.stringify(res.data.user));
+        }
       } catch (error) {
-        console.log(error);
+        // Fallback to localStorage if API call fails (e.g. cross-site cookies blocked)
+        syncUserFromStorage();
       }
     };
 
     fetchUser();
+
+    // Listen for storage or custom auth changes across tabs and navigations
+    window.addEventListener("storage", syncUserFromStorage);
+    window.addEventListener("auth-change", syncUserFromStorage);
+
+    return () => {
+      window.removeEventListener("storage", syncUserFromStorage);
+      window.removeEventListener("auth-change", syncUserFromStorage);
+    };
   }, []);
 
   // Logout Handler
   const handleLogout = async () => {
     try {
-   await API.post("/auth/logout", {});
+      await API.post("/auth/logout", {});
+    } catch (error) {
+      console.log(error);
+    } finally {
+      localStorage.removeItem("user");
+      window.dispatchEvent(new Event("auth-change"));
       setUser(null);
       setMenuOpen(false);
       navigate("/login");
-    } catch (error) {
-      console.log(error);
     }
   };
 
@@ -140,7 +173,9 @@ export default function Navbar() {
                     <div className="md:absolute right-0 mt-2 w-56 rounded-2xl bg-white text-slate-800 shadow-2xl border border-slate-100 overflow-hidden z-50">
                       {user.resume ? (
                         <>
-                          <a href={`${(process.env.REACT_APP_API_URL || "https://job-frame.onrender.com").replace(/\/+$/, "")}/uploads/resumes/${user.resume}`}                            target="_blank"
+                          <a
+                            href={`${(process.env.REACT_APP_API_URL || "https://job-frame.onrender.com").replace(/\/+$/, "")}/uploads/resumes/${user.resume}`}
+                            target="_blank"
                             rel="noreferrer"
                             className="block px-4 py-3 text-xs font-bold hover:bg-slate-50 transition border-b border-slate-100"
                           >
@@ -148,7 +183,7 @@ export default function Navbar() {
                           </a>
 
                           <a
-                           href={`${(process.env.REACT_APP_API_URL || "https://job-frame.onrender.com").replace(/\/+$/, "")}/uploads/resumes/${user.resume}`}
+                            href={`${(process.env.REACT_APP_API_URL || "https://job-frame.onrender.com").replace(/\/+$/, "")}/uploads/resumes/${user.resume}`}
                             download
                             className="block px-4 py-3 text-xs font-bold hover:bg-slate-50 transition border-b border-slate-100"
                           >

@@ -8,6 +8,12 @@ const API = axios.create({
   withCredentials: true,
 });
 
+// Guard against accidental double "/api" prefix in requests
+API.interceptors.request.use((config) => {
+  if (config.url && config.url.startsWith("/api/")) {
+    config.url = config.url.replace(/^\/api/, "");
+  }
+  return config;
+});
+
 export default API;
-
-

@@ -27,8 +27,14 @@ export default function UserDashboard() {
   const navigate = useNavigate();
 
   // User and menu states
-  const [user, setUser] = useState(null);
-  const [userLoading, setUserLoading] = useState(true);
+  const [user, setUser] = useState(() => {
+    try {
+      return JSON.parse(localStorage.getItem("user")) || null;
+    } catch {
+      return null;
+    }
+  });
+  const [userLoading, setUserLoading] = useState(() => !localStorage.getItem("user"));
   const [profileOpen, setProfileOpen] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -64,7 +70,12 @@ export default function UserDashboard() {
         console.error("Error fetching user:", error);
 
         if (!cancelled) {
-          setUser(null);
+          try {
+            const stored = JSON.parse(localStorage.getItem("user"));
+            setUser(stored || null);
+          } catch {
+            setUser(null);
+          }
         }
       } finally {
         if (!cancelled) {
@@ -170,6 +181,8 @@ export default function UserDashboard() {
     } catch (error) {
       console.error("Logout error:", error);
     } finally {
+      localStorage.removeItem("user");
+      window.dispatchEvent(new Event("auth-change"));
       setUser(null);
       navigate("/login");
     }
