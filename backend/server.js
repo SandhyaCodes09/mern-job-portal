@@ -48,10 +48,34 @@ app.use(cookieParser());
 
 
 
+// const allowedOrigins = [
+//   "http://localhost:3000",
+//   "http://localhost:5173",
+//   "https://mern-job-portal-henna.vercel.app",
+// ];
+
+// app.use(
+//   cors({
+//     origin: function (origin, callback) {
+//       if (!origin || allowedOrigins.includes(origin)) {
+//         return callback(null, true);
+//       }
+
+//       return callback(new Error(`CORS blocked origin: ${origin}`));
+//     },
+//     credentials: true,
+//   })
+// );
+
 const allowedOrigins = [
   "http://localhost:3000",
   "http://localhost:5173",
+
+  // Production frontend
   "https://mern-job-portal-henna.vercel.app",
+
+  // Test branch frontend
+  "https://mern-job-portal-git-api-update-test-sandhya-projects2.vercel.app",
 ];
 
 app.use(
@@ -64,9 +88,10 @@ app.use(
       return callback(new Error(`CORS blocked origin: ${origin}`));
     },
     credentials: true,
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
-
 
 
 // routes
