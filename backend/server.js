@@ -72,18 +72,22 @@ const allowedOrigins = [
   "http://localhost:5173",
 
   // Production frontend
+  "https://talent-bridge-rp.vercel.app",
   "https://mern-job-portal-henna.vercel.app",
 
   // Test branch frontend
   "https://mern-job-portal-git-api-update-test-sandhya-projects2.vercel.app",
-
   "https://telent-bridge-git-api-update-test-sandhya-projects2.vercel.app"
 ];
 
 app.use(
   cors({
     origin: function (origin, callback) {
-      if (!origin || allowedOrigins.includes(origin)) {
+      if (
+        !origin ||
+        allowedOrigins.includes(origin) ||
+        /^https:\/\/([a-zA-Z0-9-]+)\.vercel\.app$/.test(origin)
+      ) {
         return callback(null, true);
       }
 
