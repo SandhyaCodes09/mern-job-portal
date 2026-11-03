@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { Loader2 } from "lucide-react";
 import { loginUser } from "../../services/authService";
 
 export default function Login() {
@@ -10,6 +11,7 @@ export default function Login() {
     email: "",
     password: "",
   });
+  const [loading, setLoading] = useState(false);
 
   // 🔹 handle input change
   const handleChange = (e) => {
@@ -19,6 +21,8 @@ export default function Login() {
   // 🔹 handle submit
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (loading) return;
+    setLoading(true);
 
     try {
       const res = await loginUser(form);
@@ -37,6 +41,8 @@ export default function Login() {
       }
     } catch (err) {
       alert(err.response?.data?.msg || "Login failed");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -73,15 +79,22 @@ export default function Login() {
               name="email"
               placeholder="name@example.com"
               onChange={handleChange}
+              disabled={loading}
               required
-              className="w-full bg-slate-50 border border-slate-200 text-slate-800 rounded-xl p-3.5 focus:bg-white focus:ring-2 focus:ring-[#2048BD] focus:border-transparent transition-all outline-none font-medium placeholder-slate-400"
+              className={`w-full bg-slate-50 border border-slate-200 text-slate-800 rounded-xl p-3.5 focus:bg-white focus:ring-2 focus:ring-[#2048BD] focus:border-transparent transition-all outline-none font-medium placeholder-slate-400 ${
+                loading ? "opacity-60 cursor-not-allowed" : ""
+              }`}
             />
           </div>
 
           <div className="space-y-1.5">
             <div className="flex justify-between items-center">
               <label className="text-sm font-bold text-slate-700">Password</label>
-              <button type="button" className="text-xs font-bold text-[#2048BD] hover:underline">
+              <button
+                type="button"
+                disabled={loading}
+                className="text-xs font-bold text-[#2048BD] hover:underline disabled:opacity-50"
+              >
                 Forgot Password?
               </button>
             </div>
@@ -90,16 +103,27 @@ export default function Login() {
               name="password"
               placeholder="••••••••"
               onChange={handleChange}
+              disabled={loading}
               required
-              className="w-full bg-slate-50 border border-slate-200 text-slate-800 rounded-xl p-3.5 focus:bg-white focus:ring-2 focus:ring-[#2048BD] focus:border-transparent transition-all outline-none font-medium placeholder-slate-400"
+              className={`w-full bg-slate-50 border border-slate-200 text-slate-800 rounded-xl p-3.5 focus:bg-white focus:ring-2 focus:ring-[#2048BD] focus:border-transparent transition-all outline-none font-medium placeholder-slate-400 ${
+                loading ? "opacity-60 cursor-not-allowed" : ""
+              }`}
             />
           </div>
 
           <button
             type="submit"
-            className="w-full bg-[#2048BD] hover:bg-[#1E40AF] text-white py-3.5 rounded-xl font-bold transition-all shadow-md shadow-blue-500/20 active:scale-95 mt-2"
+            disabled={loading}
+            className="w-full bg-[#2048BD] hover:bg-[#1E40AF] disabled:opacity-75 disabled:cursor-not-allowed text-white py-3.5 rounded-xl font-bold transition-all shadow-md shadow-blue-500/20 active:scale-95 mt-2 flex items-center justify-center gap-2"
           >
-            Sign In
+            {loading ? (
+              <>
+                <Loader2 className="w-5 h-5 animate-spin" />
+                <span>Signing In...</span>
+              </>
+            ) : (
+              "Sign In"
+            )}
           </button>
         </form>
 
