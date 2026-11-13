@@ -30,12 +30,12 @@ export default function Home() {
   const user = JSON.parse(localStorage.getItem("user"));
 
   // Redirect employer to employer dashboard
-  useEffect(() => {
-    if (user?.role === "employer") {
-      navigate("/employer", { replace: true });
-    }
-  }, [navigate, user]);
-
+  // useEffect(() => {
+  //   if (user?.role === "employer") {
+  //     navigate("/employer", { replace: true });
+  //   }
+  // }, [navigate, user]);
+  
   // Fetch Jobs from Backend
   useEffect(() => {
     const fetchJobs = async () => {

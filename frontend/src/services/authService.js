@@ -66,3 +66,15 @@ export const updateEmployerProfile = async (formData) => {
     return res.data;
 };
 
+// google login API
+
+export const googleLoginUser = async(data) =>{
+    const res = await API.post(
+        "/auth/google-login",
+        data,
+        {
+            withCredentials: true 
+        }
+    );
+    return res.data;
+}
