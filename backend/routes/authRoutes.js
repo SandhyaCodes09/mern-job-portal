@@ -2,7 +2,8 @@ const express = require("express");
 const router = express.Router();
 const { 
     registerUser, 
-    loginUser, 
+    loginUser,
+    googleLogin, 
     getMe, 
     logoutUser,  
     uploadResume,
@@ -59,5 +60,7 @@ router.put(
     updateEmployerProfile
 
 );
+
+router.post("/google-login", googleLogin);
 
 module.exports = router;

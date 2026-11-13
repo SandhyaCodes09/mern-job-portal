@@ -9,7 +9,7 @@ const userSchema = new mongoose.Schema(
 
         last_name: {
             type: String,
-            required: true
+            default: ""
         },
 
         email: {
@@ -20,25 +20,23 @@ const userSchema = new mongoose.Schema(
 
         phone_no: {
             type: String,
-            required: true,
-            unique: true
+            default: ""
         },
 
         address: {
             type: String,
-            required: true
+            default: "", 
         },
 
         gender: {
             type: String,
-            enum: ["male", "female", "other"],
-            required: true
+            enum: ["male", "female", "other", ""],
+            default: ""
         },
 
         password: {
             type: String,
-            required: true,
-            minlength: 6
+            default: "" ,
         },
 
         role: {

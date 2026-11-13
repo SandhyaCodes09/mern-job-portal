@@ -172,7 +172,11 @@ exports.logoutUser = async (req, res) => {
     try {
 
         // Clear token cookie
-        res.clearCookie("token");
+        res.clearCookie("token",{
+            httpOnly: true,
+            sameSite: "none",
+            secure: true
+        });
 
         res.json({
             msg: "Logout successful"
@@ -474,4 +478,76 @@ exports.updateEmployerProfile = async (req, res) => {
 
     }
 
+};
+
+
+// ===============================
+// GOOGLE LOGIN CONTROLLER
+// ===============================
+exports.googleLogin = async (req, res) => {
+    try {
+        const { email, displayName, photoURL } = req.body;
+
+        if (!email) {
+            return res.status(400).json({ msg: "Email is required" });
+        }
+
+        // 1. Check if user already exists
+        let user = await User.findOne({ email });
+
+        // 2. if user dos'nt exits then register new user
+        if (!user) {
+            // split Google nameto first_name aur last_name
+            const nameParts = (displayName || "Google User").split(" ");
+            const first_name = nameParts[0] || "User";
+            const last_name = nameParts.slice(1).join(" ") || "";
+
+            user = new User({
+                first_name,
+                last_name,
+                email,
+                profileImage: photoURL || "",
+                authType: "google",
+                role: "user" // default role
+            });
+
+            await user.save();
+        }
+
+        // 3. Generate JWT Token 
+        const token = jwt.sign(
+            {
+                id: user._id,
+                first_name: user.first_name,
+                role: user.role
+            },
+            process.env.JWT_SECRET,
+            { expiresIn: "7d" }
+        );
+
+        // 4. Set HTTP-only Cookie
+        res.cookie("token", token, {
+            httpOnly: true,
+            maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+            sameSite: "none",
+            secure: true
+        });
+
+        // 5. Send user info back to frontend
+        return res.status(200).json({
+            msg: "Google Login successful",
+            user: {
+                id: user._id,
+                first_name: user.first_name,
+                last_name: user.last_name,
+                email: user.email,
+                role: user.role,
+                profileImage: user.profileImage
+            }
+        });
+
+    } catch (error) {
+        console.error("Google Auth Error:", error);
+        res.status(500).json({ msg: "Server error during Google auth" });
+    }
 };
