@@ -1,9 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Loader2 } from "lucide-react";
 
 // Firebase imports
-import { signInWithPopup } from "firebase/auth";
+import { signInWithPopup, signInWithRedirect, getRedirectResult } from "firebase/auth";
 import { auth, googleProvider } from "../../firebase";
 
 // Service imports 
@@ -13,18 +13,59 @@ export default function Login() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
 
- const handleGoogleSignIn = async () => {
+  // Check if returning from Google redirect
+  useEffect(() => {
+    let isMounted = true;
+    const checkRedirect = async () => {
+      try {
+        const result = await getRedirectResult(auth);
+        if (result?.user && isMounted) {
+          setLoading(true);
+          const { email, displayName, photoURL } = result.user;
+          const res = await googleLoginUser({
+            email,
+            displayName,
+            photoURL,
+          });
+          localStorage.setItem("user", JSON.stringify(res.user));
+          window.dispatchEvent(new Event("auth-change"));
+          alert("Google Login Successful!");
+          if (res.user.role === "employer") {
+            navigate("/employer");
+          } else {
+            navigate("/");
+          }
+        }
+      } catch (error) {
+        console.error("Google Redirect Result Error:", error);
+        if (isMounted) {
+          alert(error.response?.data?.msg || error.message || "Google Sign-in Failed");
+        }
+      } finally {
+        if (isMounted) setLoading(false);
+      }
+    };
+
+    checkRedirect();
+    return () => {
+      isMounted = false;
+    };
+  }, [navigate]);
+
+  const handleGoogleSignIn = async () => {
     try {
       setLoading(true);
-      // 1. Google popup open
+      // 1. Attempt Google popup open
       const result = await signInWithPopup(auth, googleProvider);
-      const { email, displayName, photoURL } = result.user; // 👈 photoURL (capital URL)
+      const { email, displayName, photoURL } = result.user;
+
       // 2. Send data to backend
       const res = await googleLoginUser({
         email,
         displayName,
         photoURL,
       });
+
       // 3. LocalStorage & Redirect
       localStorage.setItem("user", JSON.stringify(res.user));
       window.dispatchEvent(new Event("auth-change"));
@@ -35,10 +76,30 @@ export default function Login() {
         navigate("/");
       }
     } catch (error) {
-      console.error(error);
-      alert(error.response?.data?.msg || "Google Sign-in Failed");
+      console.error("Google Auth Error:", error);
+      if (error.code === "auth/popup-blocked") {
+        // Fallback to redirect if popup is blocked by browser
+        console.warn("Popup blocked by browser. Falling back to redirect...");
+        try {
+          await signInWithRedirect(auth, googleProvider);
+          return;
+        } catch (redirectError) {
+          console.error("Redirect Error:", redirectError);
+          alert(
+            "Aapke browser ne login pop-up block kar diya hai.\n\nKripya browser ke address bar me 'Pop-up blocked' icon par click karke allow karein."
+          );
+        }
+      } else if (error.code === "auth/unauthorized-domain") {
+        alert(
+          "Yeh domain Firebase me authorized nahi hai!\n\nKripya Firebase Console > Authentication > Settings > Authorized Domains me jaakar apna domain add karein."
+        );
+      } else if (error.code === "auth/popup-closed-by-user") {
+        // User closed popup intentionally
+      } else {
+        alert(error.response?.data?.msg || error.message || "Google Sign-in Failed");
+      }
     } finally {
-      setLoading(false); 
+      setLoading(false);
     }
   };
 

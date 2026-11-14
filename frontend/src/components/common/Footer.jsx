@@ -71,24 +71,6 @@ export default function Footer() {
                   Jobs
                 </Link>
               </li>
-
-              <li>
-                <Link
-                  to="/login"
-                  className="hover:text-white hover:translate-x-1 inline-block transition-all duration-200"
-                >
-                  Login
-                </Link>
-              </li>
-
-              <li>
-                <Link
-                  to="/register"
-                  className="hover:text-white hover:translate-x-1 inline-block transition-all duration-200"
-                >
-                  Register
-                </Link>
-              </li>
             </ul>
           </div>
 
