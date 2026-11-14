@@ -1,13 +1,9 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Loader2 } from "lucide-react";
 
 // Firebase imports
-import {
-  signInWithPopup,
-  signInWithRedirect,
-  getRedirectResult,
-} from "firebase/auth";
+import { signInWithPopup } from "firebase/auth";
 import { auth, googleProvider } from "../../firebase";
 
 // Service imports
@@ -17,12 +13,15 @@ export default function Login() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
 
-  // Helper to complete user login & redirect
-  const completeGoogleLogin = useCallback(
-    async (user) => {
-      try {
+  // Handle Google Sign In
+  const handleGoogleSignIn = async () => {
+    try {
+      // Direct call to signInWithPopup to preserve browser user activation gesture
+      const result = await signInWithPopup(auth, googleProvider);
+
+      if (result?.user) {
         setLoading(true);
-        const { email, displayName, photoURL } = user;
+        const { email, displayName, photoURL } = result.user;
         const res = await googleLoginUser({
           email,
           displayName,
@@ -38,76 +37,22 @@ export default function Login() {
         } else {
           navigate("/");
         }
-      } catch (err) {
-        console.error("Backend Google Login Error:", err);
-        alert(
-          err.response?.data?.msg ||
-            "Google authentication succeeded, but backend verification failed."
-        );
-      } finally {
-        setLoading(false);
-      }
-    },
-    [navigate]
-  );
-
-  // 1. Check if returning from Google redirect
-  useEffect(() => {
-    let isMounted = true;
-    const checkRedirect = async () => {
-      try {
-        const result = await getRedirectResult(auth);
-        if (result?.user && isMounted) {
-          await completeGoogleLogin(result.user);
-        }
-      } catch (error) {
-        console.error("Google Redirect Result Error:", error);
-        if (isMounted) {
-          alert(
-            error.response?.data?.msg ||
-              error.message ||
-              "Google Sign-in Failed"
-          );
-        }
-      }
-    };
-
-    checkRedirect();
-    return () => {
-      isMounted = false;
-    };
-  }, [completeGoogleLogin]);
-
-  // 2. Handle Google Sign In click
-  const handleGoogleSignIn = async () => {
-    try {
-      // NOTE: Call signInWithPopup FIRST, directly on the click event stack,
-      // so browser popup blockers do not flag it as delayed.
-      const popupPromise = signInWithPopup(auth, googleProvider);
-      setLoading(true);
-
-      const result = await popupPromise;
-      if (result?.user) {
-        await completeGoogleLogin(result.user);
       }
     } catch (error) {
       console.error("Google Auth Error:", error);
 
       if (error.code === "auth/popup-blocked") {
-        console.warn("Popup blocked by browser. Falling back to redirect...");
-        try {
-          // Fallback to full-page redirect
-          await signInWithRedirect(auth, googleProvider);
-          return;
-        } catch (redirectError) {
-          console.error("Redirect Error:", redirectError);
-          alert(
-            "Browser ne popup block kar diya hai.\n\nKripya address bar me popup allow karein ya browser shields off karein."
-          );
-        }
+        alert(
+          "Your browser has blocked the Google Sign-in pop-up window!\n\n" +
+          "To allow it:\n" +
+          "1. Click the 'Pop-up blocked' icon (🚫) on the right side of your browser's address bar.\n" +
+          "2. Select 'Always allow pop-ups and redirects from this site' and click Done.\n" +
+          "3. Click 'Continue with Google' again."
+        );
       } else if (error.code === "auth/unauthorized-domain") {
         alert(
-          "Yeh domain Firebase me authorized nahi hai!\n\nKripya Firebase Console > Authentication > Settings > Authorized Domains me jaakar apna domain add karein."
+          "This domain is not authorized in the Firebase Console!\n\n" +
+          "Please navigate to Firebase Console > Authentication > Settings > Authorized Domains and add your current domain."
         );
       } else if (error.code === "auth/popup-closed-by-user") {
         console.log("User closed the popup.");
@@ -118,22 +63,23 @@ export default function Login() {
             "Google Sign-in Failed"
         );
       }
+    } finally {
       setLoading(false);
     }
   };
 
-  // 🔹 state for login form
+  // State for login form
   const [form, setForm] = useState({
     email: "",
     password: "",
   });
 
-  // 🔹 handle input change
+  // Handle form input change
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  // 🔹 handle submit
+  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (loading) return;

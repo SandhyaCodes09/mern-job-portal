@@ -495,9 +495,9 @@ exports.googleLogin = async (req, res) => {
         // 1. Check if user already exists
         let user = await User.findOne({ email });
 
-        // 2. if user dos'nt exits then register new user
+        // 2. If user does not exist, register a new user
         if (!user) {
-            // split Google nameto first_name aur last_name
+            // Split Google name into first_name and last_name
             const nameParts = (displayName || "Google User").split(" ");
             const first_name = nameParts[0] || "User";
             const last_name = nameParts.slice(1).join(" ") || "";
