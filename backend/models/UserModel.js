@@ -46,6 +46,12 @@ const userSchema = new mongoose.Schema(
             default: "user"
         },
 
+        authType: {
+            type: String,
+            enum: ["local", "google"],
+            default: "local"
+        },
+
         resume: {
             type: String,
             default: ""
@@ -56,9 +62,7 @@ const userSchema = new mongoose.Schema(
             default: ""
         },
 
-
-    // Employer Fields yahin add honge
-
+        // Employer Fields
         companyName: {
             type: String,
             default: ""
@@ -97,17 +101,12 @@ const userSchema = new mongoose.Schema(
         companyLogo: {
             type: String,
             default: ""
-        },
-
-        profileImage:{
-        type:String,
-        default:""
-        },
-
+        }
     },
     {
         timestamps: true
-    });
+    }
+);
 
 const UserModel = mongoose.model("User", userSchema);
 

@@ -1,48 +1,74 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Loader2 } from "lucide-react";
 
 // Firebase imports
-import { signInWithPopup, signInWithRedirect, getRedirectResult } from "firebase/auth";
+import {
+  signInWithPopup,
+  signInWithRedirect,
+  getRedirectResult,
+} from "firebase/auth";
 import { auth, googleProvider } from "../../firebase";
 
-// Service imports 
+// Service imports
 import { loginUser, googleLoginUser } from "../../services/authService";
 
 export default function Login() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
 
-  // Check if returning from Google redirect
+  // Helper to complete user login & redirect
+  const completeGoogleLogin = useCallback(
+    async (user) => {
+      try {
+        setLoading(true);
+        const { email, displayName, photoURL } = user;
+        const res = await googleLoginUser({
+          email,
+          displayName,
+          photoURL,
+        });
+
+        localStorage.setItem("user", JSON.stringify(res.user));
+        window.dispatchEvent(new Event("auth-change"));
+        alert("Google Login Successful!");
+
+        if (res.user?.role === "employer") {
+          navigate("/employer");
+        } else {
+          navigate("/");
+        }
+      } catch (err) {
+        console.error("Backend Google Login Error:", err);
+        alert(
+          err.response?.data?.msg ||
+            "Google authentication succeeded, but backend verification failed."
+        );
+      } finally {
+        setLoading(false);
+      }
+    },
+    [navigate]
+  );
+
+  // 1. Check if returning from Google redirect
   useEffect(() => {
     let isMounted = true;
     const checkRedirect = async () => {
       try {
         const result = await getRedirectResult(auth);
         if (result?.user && isMounted) {
-          setLoading(true);
-          const { email, displayName, photoURL } = result.user;
-          const res = await googleLoginUser({
-            email,
-            displayName,
-            photoURL,
-          });
-          localStorage.setItem("user", JSON.stringify(res.user));
-          window.dispatchEvent(new Event("auth-change"));
-          alert("Google Login Successful!");
-          if (res.user.role === "employer") {
-            navigate("/employer");
-          } else {
-            navigate("/");
-          }
+          await completeGoogleLogin(result.user);
         }
       } catch (error) {
         console.error("Google Redirect Result Error:", error);
         if (isMounted) {
-          alert(error.response?.data?.msg || error.message || "Google Sign-in Failed");
+          alert(
+            error.response?.data?.msg ||
+              error.message ||
+              "Google Sign-in Failed"
+          );
         }
-      } finally {
-        if (isMounted) setLoading(false);
       }
     };
 
@@ -50,43 +76,33 @@ export default function Login() {
     return () => {
       isMounted = false;
     };
-  }, [navigate]);
+  }, [completeGoogleLogin]);
 
+  // 2. Handle Google Sign In click
   const handleGoogleSignIn = async () => {
     try {
+      // NOTE: Call signInWithPopup FIRST, directly on the click event stack,
+      // so browser popup blockers do not flag it as delayed.
+      const popupPromise = signInWithPopup(auth, googleProvider);
       setLoading(true);
-      // 1. Attempt Google popup open
-      const result = await signInWithPopup(auth, googleProvider);
-      const { email, displayName, photoURL } = result.user;
 
-      // 2. Send data to backend
-      const res = await googleLoginUser({
-        email,
-        displayName,
-        photoURL,
-      });
-
-      // 3. LocalStorage & Redirect
-      localStorage.setItem("user", JSON.stringify(res.user));
-      window.dispatchEvent(new Event("auth-change"));
-      alert("Google Login Successful!");
-      if (res.user.role === "employer") {
-        navigate("/employer");
-      } else {
-        navigate("/");
+      const result = await popupPromise;
+      if (result?.user) {
+        await completeGoogleLogin(result.user);
       }
     } catch (error) {
       console.error("Google Auth Error:", error);
+
       if (error.code === "auth/popup-blocked") {
-        // Fallback to redirect if popup is blocked by browser
         console.warn("Popup blocked by browser. Falling back to redirect...");
         try {
+          // Fallback to full-page redirect
           await signInWithRedirect(auth, googleProvider);
           return;
         } catch (redirectError) {
           console.error("Redirect Error:", redirectError);
           alert(
-            "Aapke browser ne login pop-up block kar diya hai.\n\nKripya browser ke address bar me 'Pop-up blocked' icon par click karke allow karein."
+            "Browser ne popup block kar diya hai.\n\nKripya address bar me popup allow karein ya browser shields off karein."
           );
         }
       } else if (error.code === "auth/unauthorized-domain") {
@@ -94,11 +110,14 @@ export default function Login() {
           "Yeh domain Firebase me authorized nahi hai!\n\nKripya Firebase Console > Authentication > Settings > Authorized Domains me jaakar apna domain add karein."
         );
       } else if (error.code === "auth/popup-closed-by-user") {
-        // User closed popup intentionally
+        console.log("User closed the popup.");
       } else {
-        alert(error.response?.data?.msg || error.message || "Google Sign-in Failed");
+        alert(
+          error.response?.data?.msg ||
+            error.message ||
+            "Google Sign-in Failed"
+        );
       }
-    } finally {
       setLoading(false);
     }
   };
@@ -122,14 +141,10 @@ export default function Login() {
 
     try {
       const res = await loginUser(form);
-      console.log(res.user.role);
-
-      // Store logged in user and notify components
       localStorage.setItem("user", JSON.stringify(res.user));
       window.dispatchEvent(new Event("auth-change"));
       alert("Login Successful");
 
-      // Redirect according to role
       if (res.user.role === "employer") {
         navigate("/employer");
       } else {
@@ -218,8 +233,9 @@ export default function Login() {
               onChange={handleChange}
               disabled={loading}
               required
-              className={`w-full bg-slate-50 border border-slate-200 text-slate-800 rounded-xl p-3.5 focus:bg-white focus:ring-2 focus:ring-[#2048BD] focus:border-transparent transition-all outline-none font-medium placeholder-slate-400 ${loading ? "opacity-60 cursor-not-allowed" : ""
-                }`}
+              className={`w-full bg-slate-50 border border-slate-200 text-slate-800 rounded-xl p-3.5 focus:bg-white focus:ring-2 focus:ring-[#2048BD] focus:border-transparent transition-all outline-none font-medium placeholder-slate-400 ${
+                loading ? "opacity-60 cursor-not-allowed" : ""
+              }`}
             />
           </div>
 
@@ -243,8 +259,9 @@ export default function Login() {
               onChange={handleChange}
               disabled={loading}
               required
-              className={`w-full bg-slate-50 border border-slate-200 text-slate-800 rounded-xl p-3.5 focus:bg-white focus:ring-2 focus:ring-[#2048BD] focus:border-transparent transition-all outline-none font-medium placeholder-slate-400 ${loading ? "opacity-60 cursor-not-allowed" : ""
-                }`}
+              className={`w-full bg-slate-50 border border-slate-200 text-slate-800 rounded-xl p-3.5 focus:bg-white focus:ring-2 focus:ring-[#2048BD] focus:border-transparent transition-all outline-none font-medium placeholder-slate-400 ${
+                loading ? "opacity-60 cursor-not-allowed" : ""
+              }`}
             />
           </div>
 
