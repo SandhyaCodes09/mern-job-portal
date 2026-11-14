@@ -14,12 +14,11 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
 
   // Handle Google Sign In
-  const handleGoogleSignIn = async () => {
-    try {
-      setLoading(true);
-      const result = await signInWithPopup(auth, googleProvider);
-
-      if (result?.user) {
+  const handleGoogleSignIn = () => {
+    // 1. MUST call signInWithPopup synchronously on click - no async delay or setState before this!
+    signInWithPopup(auth, googleProvider)
+      .then(async (result) => {
+        setLoading(true);
         const { email, displayName, photoURL } = result.user;
         const res = await googleLoginUser({
           email,
@@ -36,20 +35,20 @@ export default function Login() {
         } else {
           navigate("/");
         }
-      }
-    } catch (error) {
-      console.error("Google Auth Error:", error);
+      })
+      .catch((error) => {
+        console.error("Google Auth Error:", error);
 
-      // Ignore if user simply closed the popup window
-      if (error.code === "auth/popup-closed-by-user") {
-        return;
-      }
+        // Ignore if user manually closed the popup
+        if (error.code === "auth/popup-closed-by-user") {
+          return;
+        }
 
-      // Show the actual error message
-      alert(error.response?.data?.msg || error.message || "Google Sign-in Failed");
-    } finally {
-      setLoading(false);
-    }
+        alert(error.response?.data?.msg || error.message || "Google Sign-in Failed");
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   };
 
   // State for login form
